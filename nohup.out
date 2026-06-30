@@ -1,0 +1,300 @@
+INFO:     Started server process [560153]
+INFO:     Waiting for application startup.
+Unable to connect to DB. DATABASE_URL found in environment, but prisma package not found.
+
+   ██╗     ██╗████████╗███████╗██╗     ██╗     ███╗   ███╗
+   ██║     ██║╚══██╔══╝██╔════╝██║     ██║     ████╗ ████║
+   ██║     ██║   ██║   █████╗  ██║     ██║     ██╔████╔██║
+   ██║     ██║   ██║   ██╔══╝  ██║     ██║     ██║╚██╔╝██║
+   ███████╗██║   ██║   ███████╗███████╗███████╗██║ ╚═╝ ██║
+   ╚══════╝╚═╝   ╚═╝   ╚══════╝╚══════╝╚══════╝╚═╝     ╚═╝
+
+[92m05:54:22 - LiteLLM:WARNING[0m: utils.py:3007 - register_model: model=c347e64ba4a17db24db6e432b9fa3c95db9e600d50cb3a0e625b81365e542753 not in built-in cost map and no prefix/region variant matched; cache cost fields will default to 0. To track cache cost, add cache_creation_input_token_cost and cache_read_input_token_cost to model_info
+[92m05:54:22 - LiteLLM:WARNING[0m: utils.py:3007 - register_model: model=nvidia_nim/minimaxai/minimax-m3 not in built-in cost map and no prefix/region variant matched; cache cost fields will default to 0. To track cache cost, add cache_creation_input_token_cost and cache_read_input_token_cost to model_info
+[92m05:54:22 - LiteLLM:WARNING[0m: utils.py:3007 - register_model: model=dc804bdbe4b7719729782571a974fd191b5c2e9c09fd01fab2e6191a9a459f20 not in built-in cost map and no prefix/region variant matched; cache cost fields will default to 0. To track cache cost, add cache_creation_input_token_cost and cache_read_input_token_cost to model_info
+[92m05:54:22 - LiteLLM:WARNING[0m: utils.py:3007 - register_model: model=bd1c0de9e1cce1b65dbcdd6e3e130183b7cea72f1a4f60e7359913dd40ab64ef not in built-in cost map and no prefix/region variant matched; cache cost fields will default to 0. To track cache cost, add cache_creation_input_token_cost and cache_read_input_token_cost to model_info
+[92m05:54:22 - LiteLLM Proxy:ERROR[0m: utils.py:2940 - Failed to import Prisma client: No module named 'prisma'
+[92m05:54:22 - LiteLLM Proxy:ERROR[0m: utils.py:2941 - This usually means 'prisma generate' hasn't been run yet.
+[92m05:54:22 - LiteLLM Proxy:ERROR[0m: utils.py:2944 - Please run 'prisma generate' to generate the Prisma client.
+ERROR:    Traceback (most recent call last):
+  File "/opt/venv/lib/python3.12/site-packages/litellm/proxy/utils.py", line 2938, in __init__
+    from prisma import Prisma  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+ModuleNotFoundError: No module named 'prisma'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/venv/lib/python3.12/site-packages/litellm/proxy/proxy_server.py", line 8385, in _setup_prisma_client
+    raise e
+  File "/opt/venv/lib/python3.12/site-packages/litellm/proxy/proxy_server.py", line 8381, in _setup_prisma_client
+    prisma_client = PrismaClient(
+                    ^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/litellm/proxy/utils.py", line 2947, in __init__
+    raise Exception(
+Exception: Unable to find Prisma binaries. Please run 'prisma generate' first.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/venv/lib/python3.12/site-packages/starlette/routing.py", line 638, in lifespan
+    async with self.lifespan_context(app) as maybe_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/fastapi/routing.py", line 232, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/litellm/proxy/proxy_server.py", line 849, in proxy_startup_event
+    prisma_client = await ProxyStartupEvent._setup_prisma_client(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/venv/lib/python3.12/site-packages/litellm/proxy/proxy_server.py", line 8430, in _setup_prisma_client
+    PrismaDBExceptionHandler.handle_db_exception(e)
+  File "/opt/venv/lib/python3.12/site-packages/litellm/proxy/db/exception_handler.py", line 208, in handle_db_exception
+    PrismaDBExceptionHandler.is_database_connection_error(e)
+  File "/opt/venv/lib/python3.12/site-packages/litellm/proxy/db/exception_handler.py", line 46, in is_database_connection_error
+    import prisma
+ModuleNotFoundError: No module named 'prisma'
+
+ERROR:    Application startup failed. Exiting.
+
+[1;37m#------------------------------------------------------------#[0m
+[1;37m#                                                            #[0m
+[1;37m#           'It would help me if you could add...'            #[0m
+[1;37m#        https://github.com/BerriAI/litellm/issues/new        #[0m
+[1;37m#                                                            #[0m
+[1;37m#------------------------------------------------------------#[0m
+
+ Thank you for using LiteLLM! - Krrish & Ishaan
+
+
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+
+
+[32mLiteLLM: Proxy initialized with Config, Set models:[0m
+[32m    minimax-m3[0m
+[32m    gpt-4o[0m
+[32m    claude-3-5-sonnet-20241022[0m
