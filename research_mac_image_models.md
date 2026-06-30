@@ -459,4 +459,1342 @@ You can open the report, copy the example commands and workflow structures, and 
 - Paste the mflux commands into your shell to test Z‑Image Turbo and FLUX at 1024×1024 or higher resolutions. [support.apple](https://support.apple.com/en-us/121555)
 - Build JSON workflows in ComfyUI matching the node templates (prompt → encoder → model → sampler → VAE → output), and save them as loadable templates for your M4 Pro. [huggingface](https://huggingface.co/filipstrand/Z-Image-Turbo-mflux-4bit)
 
-If you want, next step I can do is: draft a concrete `image_zimage_m4pro.json` and `image_flux_m4pro.json` schema in text form that you can adapt directly into ComfyUI, including node names, IDs, and connections tailored to your existing SKILL.md models and Mac launch script.
+---
+
+Below are draft schemas for `image_zimage_m4pro.json` and `image_flux_m4pro.json` that you can adapt directly into ComfyUI. They follow standard ComfyUI JSON structure, reference your SKILL.md model paths, and use default steps/CFG/resolution tuned for fast but high‑quality generation on your M4 Pro. [docs.comfy](https://docs.comfy.org/tutorials/image/z-image/z-image-turbo)
+
+***
+
+## Design principles for both templates
+
+These schemas are based on the official Z‑Image Turbo template (`image_z_image_turbo.json`) and community FLUX2 Klein workflows, but rewritten as generic ComfyUI graphs so they avoid copying specific copyrighted templates while preserving structure. [comfy](https://www.comfy.org/fr/workflows/image_flux2_klein_text_to_image-814fd547d86e/)
+
+They assume your models are placed as in SKILL.md:  
+
+- Z‑Image Turbo:  
+  - `ComfyUI/models/diffusion_models/z_image_turbo_bf16.safetensors`  
+  - `ComfyUI/models/text_encoders/qwen_3_4b.safetensors`  
+  - `ComfyUI/models/vae/ae.safetensors` [docs.comfy](https://docs.comfy.org/zh-CN/tutorials/image/z-image/z-image-turbo)
+- FLUX:  
+  - FLUX2 Klein UNet in `models/diffusion_models/flux2_klein_4b.safetensors` (or whatever filename you use). [comfy](https://www.comfy.org/workflows/image_flux2_klein_text_to_image/)
+
+You can import each JSON by:  
+
+1. Saving the text to a `.json` file.  
+2. Dragging it into the ComfyUI canvas or using “Load” in the UI. [comfyui](https://comfyui.org/en/z-image-turbo-in-comfyui-realism)
+
+***
+
+## Z‑Image Turbo workflow schema (`image_zimage_m4pro.json`)
+
+### Goals and default settings
+
+This schema implements a single‑prompt, single‑image Z‑Image Turbo text‑to‑image workflow:  
+
+- Resolution: 1024×1024 (native Z‑Image Turbo resolution; good balance of speed and quality). [comfyanonymous.github](https://comfyanonymous.github.io/ComfyUI_examples/z_image/)
+- Steps: 8 (sweet spot; can adjust 6–12). [huggingface](https://huggingface.co/SeeSee21/Z-Image-Turbo-AIO/blob/main/README.md)
+- CFG: 1.0 (Z‑Image Turbo is trained to work best with low CFG). [youtube](https://www.youtube.com/watch?v=3Z9LTRN8ci4)
+
+The graph uses standard ComfyUI core nodes plus explicit “DiffusionModelLoader”, “CLIPTextEncode”, “VAELoader”, “KSampler”, “VAEDecode”, and “SaveImage” nodes. [note](https://note.com/rikunarita/n/n46723d6e9255?hl=en)
+
+### JSON skeleton (adaptable)
+
+This is a **conceptual schema**; feel free to change node `type` strings to match the exact names shown in your ComfyUI installation (they’re case‑sensitive). [fossies](https://fossies.org/linux/ComfyUI/blueprints/Text%20to%20Image%20(Z-Image-Turbo).json)
+
+```json
+{
+  "version": 0.4,
+  "revision": 0,
+  "last_node_id": 8,
+  "last_link_id": 7,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "PrimitiveStringMultiline",          // Prompt input
+      "title": "Prompt",
+      "pos": [50, 50],
+      "size": [300, 120],
+      "widgets_values": [
+        "cinematic portrait, soft natural light, 35mm film look"
+      ],
+      "outputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "links":  [docs.comfy](https://docs.comfy.org/tutorials/image/z-image/z-image-turbo)
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "PrimitiveInt",                      // Seed
+      "title": "Seed",
+      "pos": [50, 190],
+      "size": [150, 60],
+      "widgets_values": [1234],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "INT",
+          "links":  [comfy](https://www.comfy.org/fr/workflows/image_flux2_klein_text_to_image-814fd547d86e/)
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "PrimitiveInt",                      // Width
+      "title": "Width",
+      "pos": [50, 260],
+      "size": [150, 60],
+      "widgets_values": [1024],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "INT",
+          "links":  [comfy](https://www.comfy.org/workflows/image_flux2_klein_text_to_image/)
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "PrimitiveInt",                      // Height
+      "title": "Height",
+      "pos": [50, 330],
+      "size": [150, 60],
+      "widgets_values": [1024],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "INT",
+          "links":  
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "PrimitiveInt",                      // Steps
+      "title": "Steps",
+      "pos": [50, 400],
+      "size": [150, 60],
+      "widgets_values":  [comfyanonymous.github](https://comfyanonymous.github.io/ComfyUI_examples/z_image/),
+      "outputs": [
+        {
+          "name": "value",
+          "type": "INT",
+          "links":  [youtube](https://www.youtube.com/watch?v=3Z9LTRN8ci4)
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "PrimitiveFloat",                    // CFG
+      "title": "CFG",
+      "pos": [50, 470],
+      "size": [150, 60],
+      "widgets_values": [1.0],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "FLOAT",
+          "links":  [github](https://github.com/Comfy-Org/workflow_templates/blob/main/templates/image_z_image_turbo.json)
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "type": "CLIPTextEncode",                    // Uses qwen_3_4b
+      "title": "CLIP Text Encode (Prompt)",
+      "pos": [400, 80],
+      "size": [310, 160],
+      "inputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 1
+        }
+      ],
+      "widgets_values": [
+        "qwen_3_4b"                                // clip_name combo
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links":  [docs.comfy](https://docs.comfy.org/zh-CN/tutorials/image/z-image/z-image-turbo)
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "type": "DiffusionModelLoader",              // Z-Image Turbo UNet
+      "title": "Load Z-Image Turbo Model",
+      "pos": [400, 260],
+      "size": [310, 140],
+      "widgets_values": [
+        "z_image_turbo_bf16"                       // unet_name combo
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links":  [comfyanonymous.github](https://comfyanonymous.github.io/ComfyUI_examples/z_image/)
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "type": "VAELoader",                         // Z-Image Turbo VAE
+      "title": "Load VAE (ae)",
+      "pos": [400, 420],
+      "size": [260, 120],
+      "widgets_values": [
+        "ae"                                       // vae_name combo
+      ],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links":  [comfyui](https://comfyui.org/en/z-image-turbo-in-comfyui-realism)
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "type": "EmptyLatentImage",                  // Latent with width/height
+      "title": "Empty Latent (Resolution)",
+      "pos": [400, 560],
+      "size": [260, 120],
+      "inputs": [
+        {
+          "name": "width",
+          "type": "INT",
+          "link": 3
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": 4
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links":  [huggingface](https://huggingface.co/SeeSee21/Z-Image-Turbo-AIO/blob/main/README.md)
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "type": "KSampler",
+      "title": "KSampler (Z-Image Turbo)",
+      "pos": [780, 260],
+      "size": [390, 220],
+      "inputs": [
+        { "name": "model", "type": "MODEL", "link": 8 },
+        { "name": "seed", "type": "INT", "link": 2 },
+        { "name": "steps", "type": "INT", "link": 5 },
+        { "name": "cfg", "type": "FLOAT", "link": 6 },
+        { "name": "positive", "type": "CONDITIONING", "link": 7 },
+        { "name": "latent_image", "type": "LATENT", "link": 10 }
+      ],
+      "widgets_values": [
+        "euler_ancestral",                         // sampler_name
+        "simple"                                   // scheduler_name
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links":  [note](https://note.com/rikunarita/n/n46723d6e9255?hl=en)
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "type": "VAEDecode",
+      "title": "VAE Decode",
+      "pos": [780, 520],
+      "size": [260, 150],
+      "inputs": [
+        { "name": "vae", "type": "VAE", "link": 9 },
+        { "name": "latent", "type": "LATENT", "link": 11 }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links":  [fossies](https://fossies.org/linux/ComfyUI/blueprints/Text%20to%20Image%20(Z-Image-Turbo).json)
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "type": "SaveImage",
+      "title": "Save Image",
+      "pos": [1100, 520],
+      "size": [260, 140],
+      "inputs": [
+        { "name": "images", "type": "IMAGE", "link": 12 }
+      ],
+      "widgets_values": [
+        "zimage_outputs",                          // output folder
+        "zimage_m4pro"                             // base filename
+      ]
+    }
+  ],
+  "links": [
+    { "id": 1, "from_node": 1, "from_output": 0, "to_node": 7, "to_input": 0 },
+    { "id": 2, "from_node": 2, "from_output": 0, "to_node": 11, "to_input": 1 },
+    { "id": 3, "from_node": 3, "from_output": 0, "to_node": 10, "to_input": 0 },
+    { "id": 4, "from_node": 4, "from_output": 0, "to_node": 10, "to_input": 1 },
+    { "id": 5, "from_node": 5, "from_output": 0, "to_node": 11, "to_input": 2 },
+    { "id": 6, "from_node": 6, "from_output": 0, "to_node": 11, "to_input": 3 },
+    { "id": 7, "from_node": 7, "from_output": 0, "to_node": 11, "to_input": 4 },
+    { "id": 8, "from_node": 8, "from_output": 0, "to_node": 11, "to_input": 0 },
+    { "id": 9, "from_node": 9, "from_output": 0, "to_node": 12, "to_input": 0 },
+    { "id": 10, "from_node": 10, "from_output": 0, "to_node": 11, "to_input": 5 },
+    { "id": 11, "from_node": 11, "from_output": 0, "to_node": 12, "to_input": 1 },
+    { "id": 12, "from_node": 12, "from_output": 0, "to_node": 13, "to_input": 0 }
+  ]
+}
+```
+
+**How to adapt to your SKILL:**  
+
+- Ensure `qwen_3_4b`, `z_image_turbo_bf16`, and `ae` match the actual names in your ComfyUI model combos; SKILL.md uses those filenames and paths. 
+- If you install **ComfyUI‑MLX**, replace `KSampler` with the MLX sampler node type and set MLX‑friendly samplers/schedulers (e.g., `res_multistep` + `beta`). [github](https://github.com/thoddnn/ComfyUI-MLX/blob/main/README.md)
+- You can raise resolution (width/height) and slightly increase `steps` on your 128 GB M4 Pro; the rest of the graph remains valid. [ominix-ai-ominix-mlx.mintlify](https://ominix-ai-ominix-mlx.mintlify.app/image/zimage)
+
+***
+
+## FLUX workflow schema (`image_flux_m4pro.json`)
+
+### Goals and default settings
+
+This schema implements a FLUX2 Klein 4B text‑to‑image workflow:  
+
+- Resolution: 1024×1024 (good default; can be scaled up). [comfy](https://www.comfy.org/fr/workflows/image_flux2_klein_text_to_image-814fd547d86e/)
+- Steps: 12 (typical for FLUX; can go 10–16). [note](https://note.com/old_pgmrs_will/n/n4a161ab7ef45?hl=en-US)
+- CFG: 7.0 (typical CFG for diffusion models like FLUX). [clawhub](https://clawhub.ai/pjain/mflux)
+
+It mirrors the Z‑Image layout but uses a FLUX UNet and, if needed, a separate FLUX VAE, along with standard text encoding and sampling nodes. [comfy](https://www.comfy.org/workflows/image_flux2_klein_text_to_image/)
+
+### JSON skeleton (adaptable)
+
+Again, treat this as a template; adjust node `type` strings and model names to the exact ones in your installation. [comfy](https://www.comfy.org/fr/workflows/image_flux2_klein_text_to_image-814fd547d86e/)
+
+```json
+{
+  "version": 0.4,
+  "revision": 0,
+  "last_node_id": 9,
+  "last_link_id": 8,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "PrimitiveStringMultiline",
+      "title": "Prompt",
+      "pos": [50, 50],
+      "size": [300, 120],
+      "widgets_values": [
+        "highly detailed studio portrait, softbox lighting, 85mm lens"
+      ],
+      "outputs": [
+        { "name": "text", "type": "STRING", "links":  [docs.comfy](https://docs.comfy.org/tutorials/image/z-image/z-image-turbo) }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "PrimitiveInt",
+      "title": "Seed",
+      "pos": [50, 190],
+      "size": [150, 60],
+      "widgets_values": [42],
+      "outputs": [
+        { "name": "value", "type": "INT", "links":  [comfy](https://www.comfy.org/fr/workflows/image_flux2_klein_text_to_image-814fd547d86e/) }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "PrimitiveInt",
+      "title": "Width",
+      "pos": [50, 260],
+      "size": [150, 60],
+      "widgets_values": [1024],
+      "outputs": [
+        { "name": "value", "type": "INT", "links":  [comfy](https://www.comfy.org/workflows/image_flux2_klein_text_to_image/) }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "PrimitiveInt",
+      "title": "Height",
+      "pos": [50, 330],
+      "size": [150, 60],
+      "widgets_values": [1024],
+      "outputs": [
+        { "name": "value", "type": "INT", "links":  
+      ]
+    },
+    {
+      "id": 5,
+      "type": "PrimitiveInt",
+      "title": "Steps",
+      "pos": [50, 400],
+      "size": [150, 60],
+      "widgets_values":  [fossies](https://fossies.org/linux/ComfyUI/blueprints/Text%20to%20Image%20(Z-Image-Turbo).json),
+      "outputs": [
+        { "name": "value", "type": "INT", "links":  [youtube](https://www.youtube.com/watch?v=3Z9LTRN8ci4) }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "PrimitiveFloat",
+      "title": "CFG",
+      "pos": [50, 470],
+      "size": [150, 60],
+      "widgets_values": [7.0],
+      "outputs": [
+        { "name": "value", "type": "FLOAT", "links":  [github](https://github.com/Comfy-Org/workflow_templates/blob/main/templates/image_z_image_turbo.json) }
+      ]
+    },
+    {
+      "id": 7,
+      "type": "CLIPTextEncode",
+      "title": "CLIP Text Encode (Prompt)",
+      "pos": [400, 80],
+      "size": [310, 160],
+      "inputs": [
+        { "name": "text", "type": "STRING", "link": 1 }
+      ],
+      "widgets_values": [
+        "flux_text_encoder"                        // adjust to actual encoder
+      ],
+      "outputs": [
+        { "name": "CONDITIONING", "type": "CONDITIONING", "links":  [docs.comfy](https://docs.comfy.org/zh-CN/tutorials/image/z-image/z-image-turbo) }
+      ]
+    },
+    {
+      "id": 8,
+      "type": "DiffusionModelLoader",
+      "title": "Load FLUX2 Klein 4B Model",
+      "pos": [400, 260],
+      "size": [310, 140],
+      "widgets_values": [
+        "flux2_klein_4b"                           // UNet checkpoint name
+      ],
+      "outputs": [
+        { "name": "MODEL", "type": "MODEL", "links":  [comfyanonymous.github](https://comfyanonymous.github.io/ComfyUI_examples/z_image/) }
+      ]
+    },
+    {
+      "id": 9,
+      "type": "VAELoader",
+      "title": "Load FLUX VAE",
+      "pos": [400, 420],
+      "size": [260, 120],
+      "widgets_values": [
+        "flux_vae"                                 // adjust to actual VAE
+      ],
+      "outputs": [
+        { "name": "VAE", "type": "VAE", "links":  [comfyui](https://comfyui.org/en/z-image-turbo-in-comfyui-realism) }
+      ]
+    },
+    {
+      "id": 10,
+      "type": "EmptyLatentImage",
+      "title": "Empty Latent (Resolution)",
+      "pos": [400, 560],
+      "size": [260, 120],
+      "inputs": [
+        { "name": "width", "type": "INT", "link": 3 },
+        { "name": "height", "type": "INT", "link": 4 }
+      ],
+      "outputs": [
+        { "name": "LATENT", "type": "LATENT", "links":  [huggingface](https://huggingface.co/SeeSee21/Z-Image-Turbo-AIO/blob/main/README.md) }
+      ]
+    },
+    {
+      "id": 11,
+      "type": "KSampler",
+      "title": "KSampler (FLUX)",
+      "pos": [780, 260],
+      "size": [390, 220],
+      "inputs": [
+        { "name": "model", "type": "MODEL", "link": 8 },
+        { "name": "seed", "type": "INT", "link": 2 },
+        { "name": "steps", "type": "INT", "link": 5 },
+        { "name": "cfg", "type": "FLOAT", "link": 6 },
+        { "name": "positive", "type": "CONDITIONING", "link": 7 },
+        { "name": "latent_image", "type": "LATENT", "link": 10 }
+      ],
+      "widgets_values": [
+        "euler",                                   // sampler_name
+        "beta"                                     // scheduler_name
+      ],
+      "outputs": [
+        { "name": "LATENT", "type": "LATENT", "links":  [note](https://note.com/rikunarita/n/n46723d6e9255?hl=en) }
+      ]
+    },
+    {
+      "id": 12,
+      "type": "VAEDecode",
+      "title": "VAE Decode",
+      "pos": [780, 520],
+      "size": [260, 150],
+      "inputs": [
+        { "name": "vae", "type": "VAE", "link": 9 },
+        { "name": "latent", "type": "LATENT", "link": 11 }
+      ],
+      "outputs": [
+        { "name": "IMAGE", "type": "IMAGE", "links":  [fossies](https://fossies.org/linux/ComfyUI/blueprints/Text%20to%20Image%20(Z-Image-Turbo).json) }
+      ]
+    },
+    {
+      "id": 13,
+      "type": "SaveImage",
+      "title": "Save Image",
+      "pos": [1100, 520],
+      "size": [260, 140],
+      "inputs": [
+        { "name": "images", "type": "IMAGE", "link": 12 }
+      ],
+      "widgets_values": [
+        "flux_outputs",
+        "flux_m4pro"
+      ]
+    }
+  ],
+  "links": [
+    { "id": 1, "from_node": 1, "from_output": 0, "to_node": 7, "to_input": 0 },
+    { "id": 2, "from_node": 2, "from_output": 0, "to_node": 11, "to_input": 1 },
+    { "id": 3, "from_node": 3, "from_output": 0, "to_node": 10, "to_input": 0 },
+    { "id": 4, "from_node": 4, "from_output": 0, "to_node": 10, "to_input": 1 },
+    { "id": 5, "from_node": 5, "from_output": 0, "to_node": 11, "to_input": 2 },
+    { "id": 6, "from_node": 6, "from_output": 0, "to_node": 11, "to_input": 3 },
+    { "id": 7, "from_node": 7, "from_output": 0, "to_node": 11, "to_input": 4 },
+    { "id": 8, "from_node": 8, "from_output": 0, "to_node": 11, "to_input": 0 },
+    { "id": 9, "from_node": 9, "from_output": 0, "to_node": 12, "to_input": 0 },
+    { "id": 10, "from_node": 10, "from_output": 0, "to_node": 11, "to_input": 5 },
+    { "id": 11, "from_node": 11, "from_output": 0, "to_node": 12, "to_input": 1 },
+    { "id": 12, "from_node": 12, "from_output": 0, "to_node": 13, "to_input": 0 }
+  ]
+}
+```
+
+**How to adapt to your SKILL:**  
+
+- Replace `flux2_klein_4b`, `flux_text_encoder`, and `flux_vae` with the actual model names you use; the MFlux Skill and FLUX workflows list specific model identifiers and encoders. [github](https://github.com/filipstrand/mflux/blob/main/src/mflux/models/common/README.md)
+- If you install **ComfyUI‑MLX**, use MLX FLUX nodes (e.g., MLX FLUX model loader and sampler) instead of the generic `DiffusionModelLoader`/`KSampler`. [runcomfy](https://www.runcomfy.com/comfyui-nodes/ComfyUI-MLX)
+- On your M4 Pro 128 GB, you can increase resolution and steps modestly for more detail while keeping CFG around 7.0, as suggested by FLUX workflow guides. [note](https://note.com/mikai_daichi/n/n31fdfdefc21d?hl=en)
+
+***
+
+## How this aligns with your Mac launch script and SKILL
+
+Your SKILL.md already has:  
+
+- A Mac‑safe ComfyUI launch command using `nohup`, virtualenv, `TQDM_DISABLE`, and `--force-fp16`, which should continue to be used when running these workflows to avoid broken pipe and TQDM issues. 
+- Clear model directories and a “Mac‑compatible models” table that lists Z‑Image Turbo bf16, Krea2 Turbo bf16, and Flux1‑dev as supported diffusion models on Mac. 
+
+These JSON templates simply add **ready‑wired graphs** that match those paths and model names, so you can:  
+
+1. Save them as `image_zimage_m4pro.json` and `image_flux_m4pro.json`.  
+2. Load them in ComfyUI.  
+3. Edit prompt, seed, steps, CFG per run, while leaving the model wiring identical.  
+
+If you’d like, next step I can help you:  
+
+- Add MLX‑specific variants of these graphs (using ComfyUI‑MLX node types instead of generic KSampler/model loader), or  
+- Design a combined “Z‑Image Turbo + FLUX” workflow that lets you select the model via a combo box and run both from a single template.
+
+---
+
+The next step is to (1) refactor your existing Z‑Image and FLUX graphs to use MLX‑backed nodes, and (2) design a combined template with a simple model selector so one workflow can drive both Z‑Image Turbo and FLUX2 Klein on your M4 Pro. [runcomfy](https://www.runcomfy.com/comfyui-nodes/ComfyUI-MLX/mlx-sampler)
+
+Below is a detailed plan plus example schemas you can adapt.
+
+***
+
+## Overall strategy
+
+- Keep the **graph topology** you already have (prompt → encoder → model → sampler → VAE → output), but swap generic loaders/samplers with MLX‑specific ones where the ComfyUI‑MLX pack provides them. [runcomfy](https://www.runcomfy.com/comfyui-nodes/ComfyUI-MLX)
+- For the **combined workflow**, centralize inputs (prompt, seed, steps, CFG, resolution) and add a **model selection widget** that drives either Z‑Image Turbo or FLUX blocks, so you can switch models without changing the graph. [comfy](https://www.comfy.org/workflows/model/flux-2-klein/)
+
+This keeps your SKILL consistent while letting you choose between MLX and PyTorch backends and between Z‑Image vs FLUX from one template.
+
+***
+
+## 1. MLX‑specific variants of the existing graphs
+
+### 1.1 MLX building blocks to target
+
+From ComfyUI‑MLX and node references:  
+
+- **MLXSampler**: an MLX‑specific sampler node intended to replace standard KSampler for diffusion models, offering high‑quality sampling with MLX’s performance on Apple Silicon. [runcomfy](https://www.runcomfy.com/comfyui-nodes/ComfyUI-MLX/mlx-sampler)
+- **MLX model loader nodes**: ComfyUI‑MLX and related packs expose MLX‑backed model loader nodes (naming varies by pack, e.g. `MLXModelLoader` / `UNETLoaderMLX` in FLUX‑oriented suites). These are used to load MLX UNet checkpoints instead of PyTorch ones. [github](https://github.com/thoddnn/ComfyUI-MLX/blob/main/README.md)
+
+Your goal:  
+
+- For Z‑Image Turbo: use a MLX UNet loader plus MLXSampler, while still reusing CLIP/Qwen text encoders and VAE nodes (which may remain PyTorch or MLX depending on availability). [comfyanonymous.github](https://comfyanonymous.github.io/ComfyUI_examples/z_image/)
+- For FLUX2 Klein: use MLX FLUX model loader + MLXSampler tuned to FLUX distilled settings (steps/CFG) per ComfyUI FLUX guides. [comfyui.nomadoor](https://comfyui.nomadoor.net/ja/basic-workflows/flux-2-klein/)
+
+### 1.2 MLX Z‑Image Turbo graph (conceptual schema)
+
+Start from your previous `image_zimage_m4pro.json` and change three core pieces:
+
+- Replace `DiffusionModelLoader` → `MLXModelLoader` (or equivalent from ComfyUI‑MLX) and point it at a **MLX‑compatible Z‑Image UNet** (e.g., a future MLX repack or a GGUF‑to‑MLX pipeline). [huggingface](https://huggingface.co/jayn7/Z-Image-Turbo-GGUF/blob/main/example_workflow.json)
+- Replace `KSampler` → `MLXSampler`, feeding the same inputs (model, seed, steps, CFG, conditioning, latent). [docs.comfy](https://docs.comfy.org/built-in-nodes/SamplerCustom)
+- Optionally, use an MLX‑optimized VAE loader (`MLXVAEModelLoader`) when available; otherwise keep the existing VAE loader. [runcomfy](https://www.runcomfy.com/comfyui-nodes/ComfyUI-MLX)
+
+Minimal conceptual update (showing just the changed nodes):
+
+```json
+{
+  "nodes": [
+    {
+      "id": 8,
+      "type": "MLXModelLoader",                 // MLX-backed UNet loader
+      "title": "Load Z-Image Turbo MLX Model",
+      "widgets_values": [
+        "z_image_turbo_mlx"                     // MLX UNet checkpoint name
+      ],
+      "outputs": [
+        { "name": "MODEL", "type": "MODEL", "links":  [github](https://github.com/capitan01R/ComfyUI-Flux2Klein-Enhancer) }
+      ]
+    },
+    {
+      "id": 11,
+      "type": "MLXSampler",                     // MLX sampler instead of KSampler
+      "title": "MLXSampler (Z-Image Turbo)",
+      "inputs": [
+        { "name": "model", "type": "MODEL", "link": 8 },
+        { "name": "seed", "type": "INT", "link": 2 },
+        { "name": "steps", "type": "INT", "link": 5 },
+        { "name": "cfg", "type": "FLOAT", "link": 6 },
+        { "name": "conditioning", "type": "CONDITIONING", "link": 7 },
+        { "name": "latent_image", "type": "LATENT", "link": 10 }
+      ],
+      "widgets_values": [
+        "euler_ancestral",                      // sampler
+        "simple"                                // scheduler
+      ],
+      "outputs": [
+        { "name": "LATENT", "type": "LATENT", "links":  [huggingface](https://huggingface.co/jayn7/Z-Image-Turbo-GGUF/blob/main/example_workflow.json) }
+      ]
+    }
+  ]
+}
+```
+
+Default settings stay the same for your M4 Pro:  
+
+- Resolution 1024×1024. [youtube](https://www.youtube.com/watch?v=3Z9LTRN8ci4)
+- Steps 8 (6–12 range). [docs.comfy](https://docs.comfy.org/tutorials/image/z-image/z-image-turbo)
+- CFG 1.0. [huggingface](https://huggingface.co/SeeSee21/Z-Image-Turbo-AIO/blob/main/README.md)
+
+You only need to adjust `widgets_values` to match the MLX UNet name once you have that checkpoint in `models/diffusion_models/`. [ominix-ai-ominix-mlx.mintlify](https://ominix-ai-ominix-mlx.mintlify.app/image/zimage)
+
+### 1.3 MLX FLUX2 Klein graph (conceptual schema)
+
+For FLUX, ComfyUI FLUX guides and enhancer packs show that FLUX‑specific workflows typically use dedicated loaders like `UNETLoader`/`CLIPLoader` plus a tuned sampler/scheduler combination (often Beta‑style schedulers for distilled models). [facebook](https://www.facebook.com/groups/comfyui/posts/950399787732722/)
+
+Your MLX variant would:
+
+- Replace generic `DiffusionModelLoader` with an MLX FLUX UNet loader (e.g. `MLXFluxModelLoader` or similar from ComfyUI‑MLX or Flux2Klein‑Enhancer). [github](https://github.com/capitan01R/ComfyUI-Flux2Klein-Enhancer)
+- Replace `KSampler` with `MLXSampler`, tuned to FLUX2 Klein 4B settings (e.g., 12–16 steps, CFG≈7, Beta 57 scheduler if your node pack exposes it). [youtube](https://www.youtube.com/watch?v=kNap0VWP1xs)
+
+Conceptual changes:
+
+```json
+{
+  "nodes": [
+    {
+      "id": 8,
+      "type": "MLXFluxModelLoader",             // MLX FLUX loader
+      "title": "Load FLUX2 Klein 4B MLX Model",
+      "widgets_values": [
+        "flux2_klein_4b_mlx"                    // MLX UNet checkpoint name
+      ],
+      "outputs": [
+        { "name": "MODEL", "type": "MODEL", "links":  [github](https://github.com/capitan01R/ComfyUI-Flux2Klein-Enhancer) }
+      ]
+    },
+    {
+      "id": 11,
+      "type": "MLXSampler",
+      "title": "MLXSampler (FLUX2 Klein 4B)",
+      "inputs": [
+        { "name": "model", "type": "MODEL", "link": 8 },
+        { "name": "seed", "type": "INT", "link": 2 },
+        { "name": "steps", "type": "INT", "link": 5 },
+        { "name": "cfg", "type": "FLOAT", "link": 6 },
+        { "name": "conditioning", "type": "CONDITIONING", "link": 7 },
+        { "name": "latent_image", "type": "LATENT", "link": 10 }
+      ],
+      "widgets_values": [
+        "euler",                                // sampler tuned for FLUX
+        "beta57"                                // scheduler, via RES4LYF pack if installed
+      ],
+      "outputs": [
+        { "name": "LATENT", "type": "LATENT", "links":  [huggingface](https://huggingface.co/jayn7/Z-Image-Turbo-GGUF/blob/main/example_workflow.json) }
+      ]
+    }
+  ]
+}
+```
+
+Recommended defaults based on FLUX guides:  
+
+- Steps: 12–16 for 1024×1024. [youtube](https://www.youtube.com/watch?v=GYJYud-E2I0)
+- CFG: ≈7.0. [youtube](https://www.youtube.com/watch?v=jV7SNCMEKMw)
+
+You can keep the rest of the graph identical to your non‑MLX FLUX template, just swapping loader/sampler for MLX versions.
+
+***
+
+## 2. Combined “Z‑Image Turbo + FLUX” workflow with model selector
+
+The goal here is a **single template** that:  
+
+- Has one set of inputs: prompt, seed, steps, CFG, width, height.  
+- Lets you choose **“Z‑Image Turbo” or “FLUX2 Klein 4B”** from a dropdown.  
+- Routes that choice into the appropriate model loader, sampler, and VAE nodes.  
+
+You can implement this in ComfyUI using:  
+
+- A `PrimitiveCombo` or `String` widget for `model_choice` (values: `"zimage"`, `"flux"`). [docs.comfy](https://docs.comfy.org/built-in-nodes/SamplerCustom)
+- A custom “ModelSwitch” node (from node packs like `rgthree` or a small custom node) that outputs different MODEL/VAE pairs based on the selected string. [facebook](https://www.facebook.com/groups/comfyui/posts/950399787732722/)
+
+### 2.1 Conceptual node layout
+
+High‑level structure:
+
+- Node 1: Prompt input.  
+- Node 2–6: Seed, steps, CFG, width, height.  
+- Node 7: Text encoder (Qwen or FLUX encoder; you can even use Qwen for both). [huggingface](https://huggingface.co/SeeSee21/Z-Image-Turbo-AIO/blob/main/README.md)
+- Node 8: `PrimitiveCombo` for model choice (`\"zimage\"`/`\"flux\"`).  
+- Node 9: `ModelSwitch` node that takes `model_choice` and outputs `MODEL` + `VAE`.  
+- Node 10: Latent image initializer.  
+- Node 11: MLXSampler (shared sampler).  
+- Node 12: VAEDecode (uses VAE from ModelSwitch).  
+- Node 13: SaveImage.  
+
+This keeps the overall flow identical; only the underlying model/vae change depending on model_choice.
+
+### 2.2 Combined workflow schema (conceptual JSON)
+
+Below is a **conceptual JSON** you can adapt; replace `ModelSwitch` with the specific node name from your node pack (or implement it yourself as a custom node that chooses between two branches). [github](https://github.com/capitan01R/ComfyUI-Flux2Klein-Enhancer)
+
+```json
+{
+  "version": 0.4,
+  "revision": 0,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "PrimitiveStringMultiline",
+      "title": "Prompt",
+      "widgets_values": [
+        "cinematic portrait, soft natural light"
+      ],
+      "outputs": [{ "name": "text", "type": "STRING", "links":  [runcomfy](https://www.runcomfy.com/comfyui-nodes/ComfyUI-MLX/mlx-sampler) }]
+    },
+    {
+      "id": 2,
+      "type": "PrimitiveInt",
+      "title": "Seed",
+      "widgets_values": [1234],
+      "outputs": [{ "name": "value", "type": "INT", "links":  [runcomfy](https://www.runcomfy.com/comfyui-nodes/ComfyUI-MLX) }]
+    },
+    {
+      "id": 3,
+      "type": "PrimitiveInt",
+      "title": "Width",
+      "widgets_values": [1024],
+      "outputs": [{ "name": "value", "type": "INT", "links":  [docs.comfy](https://docs.comfy.org/tutorials/flux/flux-2-klein) }]
+    },
+    {
+      "id": 4,
+      "type": "PrimitiveInt",
+      "title": "Height",
+      "widgets_values": [1024],
+      "outputs": [{ "name": "value", "type": "INT", "links":  [comfy](https://www.comfy.org/workflows/model/flux-2-klein/) }]
+    },
+    {
+      "id": 5,
+      "type": "PrimitiveInt",
+      "title": "Steps",
+      "widgets_values":  [github](https://github.com/capitan01R/ComfyUI-Flux2Klein-Enhancer),         // default for Z-Image; you can override per model in ModelSwitch
+      "outputs": [{ "name": "value", "type": "INT", "links":  [comfy](https://www.comfy.org/fr/workflows/image_flux2_klein_text_to_image-814fd547d86e/) }]
+    },
+    {
+      "id": 6,
+      "type": "PrimitiveFloat",
+      "title": "CFG",
+      "widgets_values": [1.0],       // default; FLUX branch can use internal override
+      "outputs": [{ "name": "value", "type": "FLOAT", "links":  [github](https://github.com/thoddnn/ComfyUI-MLX/blob/main/README.md) }]
+    },
+    {
+      "id": 7,
+      "type": "CLIPTextEncode",
+      "title": "CLIP Text Encode (Prompt)",
+      "inputs": [{ "name": "text", "type": "STRING", "link": 1 }],
+      "widgets_values": [
+        "qwen_3_4b"                  // shared encoder (works for Z-Image; FLUX may use own if desired)
+      ],
+      "outputs": [{ "name": "CONDITIONING", "type": "CONDITIONING", "links":  [facebook](https://www.facebook.com/groups/comfyui/posts/950399787732722/) }]
+    },
+    {
+      "id": 8,
+      "type": "PrimitiveCombo",
+      "title": "Model Choice",
+      "widgets_values": [
+        "zimage",                    // default, options: zimage / flux
+        "zimage",
+        ["zimage", "flux"]
+      ],
+      "outputs": [{ "name": "value", "type": "STRING", "links":  [github](https://github.com/capitan01R/ComfyUI-Flux2Klein-Enhancer) }]
+    },
+    {
+      "id": 9,
+      "type": "ModelSwitch",        // custom node: choose MODEL/VAE based on model_choice
+      "title": "Switch Between Z-Image and FLUX",
+      "inputs": [
+        { "name": "choice", "type": "STRING", "link": 8 }
+      ],
+      "widgets_values": [
+        "z_image_turbo_mlx",         // zimage_model
+        "ae",                        // zimage_vae
+        "flux2_klein_4b_mlx",        // flux_model
+        "flux_vae"                   // flux_vae
+      ],
+      "outputs": [
+        { "name": "MODEL", "type": "MODEL", "links":  [github](https://github.com/capitan01R/ComfyUI-Flux2Klein-Enhancer) },
+        { "name": "VAE", "type": "VAE", "links":  [comfyanonymous.github](https://comfyanonymous.github.io/ComfyUI_examples/z_image/) }
+      ]
+    },
+    {
+      "id": 10,
+      "type": "EmptyLatentImage",
+      "title": "Empty Latent (Resolution)",
+      "inputs": [
+        { "name": "width", "type": "INT", "link": 3 },
+        { "name": "height", "type": "INT", "link": 4 }
+      ],
+      "outputs": [{ "name": "LATENT", "type": "LATENT", "links":  [comfyui.nomadoor](https://comfyui.nomadoor.net/ja/basic-workflows/flux-2-klein/) }]
+    },
+    {
+      "id": 11,
+      "type": "MLXSampler",
+      "title": "MLXSampler (Shared)",
+      "inputs": [
+        { "name": "model", "type": "MODEL", "link": 8 },
+        { "name": "seed", "type": "INT", "link": 2 },
+        { "name": "steps", "type": "INT", "link": 5 },
+        { "name": "cfg", "type": "FLOAT", "link": 6 },
+        { "name": "conditioning", "type": "CONDITIONING", "link": 7 },
+        { "name": "latent_image", "type": "LATENT", "link": 10 }
+      ],
+      "widgets_values": [
+        "euler_ancestral",          // good for Z-Image; FLUX may prefer euler/beta57
+        "simple"
+      ],
+      "outputs": [{ "name": "LATENT", "type": "LATENT", "links":  [huggingface](https://huggingface.co/jayn7/Z-Image-Turbo-GGUF/blob/main/example_workflow.json) }]
+    },
+    {
+      "id": 12,
+      "type": "VAEDecode",
+      "title": "VAE Decode",
+      "inputs": [
+        { "name": "vae", "type": "VAE", "link": 9 },
+        { "name": "latent", "type": "LATENT", "link": 11 }
+      ],
+      "outputs": [{ "name": "IMAGE", "type": "IMAGE", "links":  [ominix-ai-ominix-mlx.mintlify](https://ominix-ai-ominix-mlx.mintlify.app/image/zimage) }]
+    },
+    {
+      "id": 13,
+      "type": "SaveImage",
+      "title": "Save Image",
+      "inputs": [
+        { "name": "images", "type": "IMAGE", "link": 12 }
+      ],
+      "widgets_values": [
+        "combined_outputs",
+        "mlx_zimage_flux_m4pro"
+      ]
+    }
+  ],
+  "links": [
+    { "id": 1, "from_node": 1, "from_output": 0, "to_node": 7, "to_input": 0 },
+    { "id": 2, "from_node": 2, "from_output": 0, "to_node": 11, "to_input": 1 },
+    { "id": 3, "from_node": 3, "from_output": 0, "to_node": 10, "to_input": 0 },
+    { "id": 4, "from_node": 4, "from_output": 0, "to_node": 10, "to_input": 1 },
+    { "id": 5, "from_node": 5, "from_output": 0, "to_node": 11, "to_input": 2 },
+    { "id": 6, "from_node": 6, "from_output": 0, "to_node": 11, "to_input": 3 },
+    { "id": 7, "from_node": 7, "from_output": 0, "to_node": 11, "to_input": 4 },
+    { "id": 8, "from_node": 8, "from_output": 0, "to_node": 9, "to_input": 0 },
+    { "id": 9, "from_node": 9, "from_output": 0, "to_node": 11, "to_input": 0 },
+    { "id": 10, "from_node": 10, "from_output": 0, "to_node": 11, "to_input": 5 },
+    { "id": 11, "from_node": 11, "from_output": 0, "to_node": 12, "to_input": 1 },
+    { "id": 12, "from_node": 12, "from_output": 0, "to_node": 13, "to_input": 0 }
+  ]
+}
+```
+
+**Tuning recommendations for the combined template on your M4 Pro:**  
+
+- Use **steps=8, CFG=1.0** when `model_choice = "zimage"`; use **steps≈12, CFG≈7.0** when `model_choice = "flux"`—you can implement this by adding internal overrides in `ModelSwitch` or by exposing a second steps/CFG widget for the FLUX branch. [docs.comfy](https://docs.comfy.org/tutorials/flux/flux-2-klein)
+- Start with **1024×1024**, but you can safely push both branches to higher resolutions thanks to your 128 GB unified memory; FLUX workflows show good behavior at 1536×1536 with the right scheduler. [youtube](https://www.youtube.com/watch?v=tplPGT9Otd8)
+
+***
+
+If you want, next I can help you translate one of these conceptual schemas into an exact ComfyUI JSON matching the node type names in your current installation (e.g., after you tell me the exact `type` strings for your ComfyUI‑MLX nodes), or add ControlNet/LoRA subgraphs on top for Z‑Image and FLUX within this combined template.
+
+---
+
+To add ControlNet and LoRA subgraphs on top of your combined Z‑Image + FLUX template, treat them as optional “branches” that plug into the same core text‑to‑image graph: prompt → encoder → model → sampler → VAE → output. [docs.comfy](https://docs.comfy.org/tutorials/image/z-image/z-image-turbo)
+
+Below is a meticulous design plan you can follow when editing your JSON.
+
+***
+
+## Design goals
+
+- Keep one **combined template** with `model_choice` (`"zimage"` / `"flux"`).  
+- Add **ControlNet branch** that can attach to whichever model is selected (Z‑Image Union ControlNet for Z‑Image; generic/FLUX‑specific ControlNet for FLUX). [comfy](https://comfy.org/workflows/image_z_image_turbo_fun_union_controlnet-7553d92529e0/)
+- Add **LoRA branch** that feeds style/character LoRAs into the active model (Z‑Image LoRAs for Z‑Image, FLUX LoRAs for FLUX). [youtube](https://www.youtube.com/watch?v=qk_HdCqjNHw)
+
+On your M4 Pro with 128 GB RAM, you can safely run Z‑Image Turbo + Union ControlNet + LoRAs and FLUX2 Klein + LoRAs at 1024×1024 and above without tight VRAM constraints. [zimageturbo](https://zimageturbo.org/z-image-turbo-controlnet)
+
+***
+
+## 1. ControlNet subgraph for Z‑Image Turbo
+
+### 1.1 Required models and patch
+
+For Z‑Image ControlNet Union, ComfyUI’s official guide and templates use the **Z‑Image‑Turbo‑Fun‑Controlnet‑Union** model patch: [youtube](https://www.youtube.com/watch?v=Fx41mfbsqzI)
+
+- ControlNet model file:  
+  - `Z-Image-Turbo-Fun-Controlnet-Union.safetensors`  
+  - Stored under: `ComfyUI/models/model_patches/` (per docs). [docs.comfy](https://docs.comfy.org/tutorials/image/z-image/z-image-turbo)
+
+Your SKILL already documents Z‑Image Turbo bf16 UNet, VAE, and Qwen3 text encoder paths; this patch completes the ControlNet setup. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/44072005/20117530-c23a-4f62-aeb0-75ad512f0b26/comfyui-set-mac-SKILL.md?AWSAccessKeyId=ASIA2F3EMEYEVVUSEPCB&Signature=nUU4I6rdnnsNbHC3LX5DUSI5xmc%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEPL%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJHMEUCIHBjs6eyjoZKNLtxTCwc4arsykkpTGarw7EcT7%2Fwvs%2FHAiEA7lgPUNv4HP25pxaYm6LQkI5270GKCFgijz4bwLsXOhMq%2FAQIu%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARABGgw2OTk3NTMzMDk3MDUiDBbzM%2FmlL6W62OlhcyrQBB6ABU%2F34H99pgRdv2q%2F62IXjb8Lvjjly7igh90ZzyPqveLfpKGTWSHUurd3kQHtz4xObMvzMzkO0mLw%2BsBYd1Atx%2FKa9rosTopJ43PRsXa06oMEzck9S2A6RGnTPJvsTMIiOrcaRKq2rf%2Fwf7Ow1tUBrQ7GRVDgmXK%2FS4u647O%2FpihOv57BeCEl8%2FUQcvN4JZ41EH38Is8qgZ%2BXAU4QNC1fWxatadS53qOoVSbFdDUPjvlRbXRx75e%2BYatpSwH8vZpYGAaHRdvFJWZJNnVYYsb9wh3iEtrQyIMN9I63m%2BFqOvvDYLxT4z7%2BD6J5T%2Bhm9BOK7HM91KergwxTR8Q92FnrDUlZk%2BKriubbJoNSMOE5JI2xFgjhjjnL45lbUzmJjYzXCSAMFIh%2BVcwwGHbrT2CzboJuRPiFqH0KHj9bm9jZW1kOo8PaPbCPLa5VlH3ltNMcsQ3BHC2PM6gz55IbYa1GzdlpYzBua0y769kBeiLYjI%2FRD6e8QhqgZaSEHOlxCVOpE5IB17t%2FC%2FfbDAIsI%2B6ABCMKgtSya6D6mIzjkyHvl1P8LwJAZZJE2KuHyqvs8PBbMmm%2B%2BFuSR9iX7thrIQP9q66znlWi8PwWV2D9N6j4fkjk0uioVa3%2BnATqjQ3CftOxSrH83O9LjAidBLLqITEuM6Oqy8RvQskBv0ZcZWi71xbNeVj8kerZ7ex56cLmpWLWanHsWseMItCOaum5JdPwlxmwrnlJQrDAZj3a%2FBJ1ffqMo5u4hZxctIRAac0LkeV24M1Ql55zrOuLh7r7W4ww4bmM0gY6mAHKV450HAKxVE5b8kcxNXjX%2BRu0k9HPdpNPO6LiNKGkLakYxSHSYaaFVfQWsLcR%2FA9CE%2BbJRrvPPHPTXp99e%2BlyXqEVRwUxPd1dPSfG%2BHXZHj5WY7udol70k8uO3lypePc0twAH68TKNiSHRTFAnfui%2Bh36QjpsG7c6VxCDC0bjGdEP0eJZlLzpoehPjGGCneQcuPiYh8fvHA%3D%3D&Expires=1782786740)
+
+### 1.2 Branch structure
+
+Extend the combined workflow with a **ControlNet branch**:
+
+New inputs:
+
+- `reference_image` (image file path or image input node).  
+- `control_mode` (combo: `"none"`, `"canny"`, `"depth"`, `"pose"`). [comfy](https://comfy.org/workflows/image_z_image_turbo_fun_union_controlnet-7553d92529e0/)
+
+New nodes (conceptually):
+
+1. `LoadImage`  
+   - Loads `reference_image`.  
+2. `ResizeImageToMatchLatent`  
+   - Resizes reference to match the target resolution (no crop).  
+   - Outputs resized image and width/height if needed. [zimageturbo](https://zimageturbo.org/z-image-turbo-controlnet)
+3. `ControlNetPreprocessor`  
+   - Branches based on `control_mode`:  
+     - Canny edge detector.  
+     - Depth model (e.g., Depth Anything).  
+     - Pose estimator (DW Pose / OpenPose). [youtube](https://www.youtube.com/watch?v=KmYNxtLZQTU)
+   - Outputs preprocessed control map(s) (IMAGE).  
+4. `ZImageControlNetLoader` / model‑patch node  
+   - Loads `Z-Image-Turbo-Fun-Controlnet-Union.safetensors`. [youtube](https://www.youtube.com/watch?v=Fx41mfbsqzI)
+5. `ControlNetApply`  
+   - Takes:  
+     - Base MODEL (Z‑Image Turbo MLX/PyTorch).  
+     - ControlNet model patch.  
+     - Preprocessed control map(s).  
+   - Outputs modified MODEL (or extra conditioning) that the sampler uses. [comfy](https://comfy.org/workflows/image_z_image_turbo_fun_union_controlnet-7553d92529e0/)
+
+Integration with core sampler:
+
+- When `model_choice == "zimage"` and `control_mode != "none"`, feed the **ControlNet‑modified MODEL** into your `MLXSampler` (or KSampler) and optionally adjust steps slightly upward (e.g., from 8 to 10) to account for ControlNet conditioning. [youtube](https://www.youtube.com/watch?v=Fx41mfbsqzI)
+- When `control_mode == "none"`, skip the ControlNet branch and use the original MODEL.  
+
+This mirrors ComfyUI’s official “Z‑Image Turbo Fun Union ControlNet” template but keeps it abstract enough to fit your combined graph. [docs.comfy](https://docs.comfy.org/tutorials/image/z-image/z-image-turbo)
+
+***
+
+## 2. LoRA subgraph for Z‑Image Turbo
+
+### 2.1 LoRA storage and loader
+
+Z‑Image LoRA guides consistently use LoRA files placed in:  
+
+- `ComfyUI/models/loras/` for Z‑Image‑Turbo LoRAs (style, character, etc.). [stablediffusiontutorials](https://www.stablediffusiontutorials.com/2025/11/z-image-turbo-lora-training.html)
+
+Many workflows use specialized LoRA loader nodes, such as **RGThree Power LoRA Loader** or similar, designed to attach LoRAs to the running model and adjust their strengths. [youtube](https://www.youtube.com/watch?v=o_yT7pEyRP8)
+
+### 2.2 Branch structure
+
+Add a **LoRA branch** to your combined graph:
+
+New inputs:
+
+- `zimage_lora_name` (combo listing installed Z‑Image LoRAs).  
+- `zimage_lora_strength` (float, e.g., 0.0–1.0). [youtube](https://www.youtube.com/watch?v=qk_HdCqjNHw)
+
+New nodes:
+
+1. `ZImageLoRALoader` (e.g., Power LoRA Loader)  
+   - Inputs: base MODEL (Z‑Image Turbo), `zimage_lora_name`, `zimage_lora_strength`.  
+   - Outputs: LoRA‑patched MODEL with the LoRA applied. [runcomfy](https://www.runcomfy.com/comfyui-workflows/z-image-turbo-ai-toolkit-lora-inference-in-comfyui-training-matched-results)
+
+Integration:
+
+- When `model_choice == "zimage"` and a LoRA is selected, feed the **LoRA‑patched MODEL** into the sampler instead of the original Z‑Image model (or ControlNet‑modified model if both branches are on). [runcomfy](https://www.runcomfy.com/comfyui-workflows/z-image-turbo-ai-toolkit-lora-inference-in-comfyui-training-matched-results)
+- Keep CFG at 1.0; LoRAs typically work with the base CFG used by Z‑Image Turbo. [youtube](https://www.youtube.com/watch?v=3Z9LTRN8ci4)
+
+On your M4 Pro, you can run multiple LoRAs simultaneously if the loader supports multi‑LoRA stacking; just track strengths carefully to avoid over‑baking styles. [youtube](https://www.youtube.com/watch?v=o_yT7pEyRP8)
+
+***
+
+## 3. ControlNet subgraph for FLUX2 Klein
+
+FLUX2 Klein ComfyUI workflows show typical **ControlNet patterns**: Canny, Depth, Pose plus Beta‑style schedulers, with some packs exposing dedicated nodes and NVFP4/GGUF model formats for VRAM efficiency. [docs.comfy](https://docs.comfy.org/tutorials/flux/flux-2-klein)
+
+### 3.1 Required models
+
+You’ll need FLUX‑compatible ControlNet models—for example, Canny/Depth/Pose ControlNet checkpoints that work with FLUX2 Klein (many tutorials bundle download links and tuned settings). [youtube](https://www.youtube.com/watch?v=jV7SNCMEKMw)
+
+Store them under `models/controlnet/` per ComfyUI convention. [youtube](https://www.youtube.com/watch?v=GYJYud-E2I0)
+
+### 3.2 Branch structure
+
+Reuse the same pattern as Z‑Image but with FLUX nodes:
+
+New inputs:
+
+- `flux_control_mode` (combo: `"none"`, `"canny"`, `"depth"`, `"pose"`).  
+
+New nodes:
+
+1. `LoadImage` (reference image).  
+2. `ResizeImageToMatchLatent`.  
+3. `ControlNetPreprocessor` (same idea as Z‑Image, but tuned to FLUX’s recommended resolution and preprocessors). [youtube](https://www.youtube.com/watch?v=jV7SNCMEKMw)
+4. `FluxControlNetLoader` (loads FLUX ControlNet model).  
+5. `ControlNetApply` (attaches to FLUX2 Klein MODEL).  
+
+Integration:
+
+- When `model_choice == "flux"` and `flux_control_mode != "none"`, pass the FLUX model through `FluxControlNetLoader`/`ControlNetApply` before the **MLXSampler**; use Beta 57 or similar scheduler recommended for FLUX2 Klein, with steps in the 12–16 range. [youtube](https://www.youtube.com/watch?v=57ppu1WmqLU)
+- If `flux_control_mode == "none"`, skip the ControlNet branch and use the base FLUX model.  
+
+Your M4 Pro can handle ControlNet at 1024×1024 and higher with FLUX2 Klein, so you can experiment with higher resolutions and more complex control maps. [docs.comfy](https://docs.comfy.org/tutorials/flux/flux-2-klein)
+
+***
+
+## 4. LoRA subgraph for FLUX2 Klein
+
+FLUX2 Klein tutorials show LoRA integration for style and image edit, often via LoRA loader nodes that patch the UNet/encoder at runtime and let you tune strengths per LoRA. [youtube](https://www.youtube.com/watch?v=GYJYud-E2I0)
+
+### 4.1 LoRA storage and loader
+
+Place FLUX‑specific LoRAs under e.g.:  
+
+- `ComfyUI/models/loras/flux/` or directly in `models/loras/` with appropriately named files. [youtube](https://www.youtube.com/watch?v=jV7SNCMEKMw)
+
+Use a generic LoRA loader node that works with FLUX models (sometimes installed via FLUX enhancer packs or RGThree node packs). [github](https://github.com/capitan01R/ComfyUI-Flux2Klein-Enhancer)
+
+### 4.2 Branch structure
+
+Add a FLUX LoRA branch:
+
+New inputs:
+
+- `flux_lora_name` (combo listing installed FLUX LoRAs).  
+- `flux_lora_strength` (float, e.g., 0.0–1.0).  
+
+New nodes:
+
+1. `FluxLoRALoader`  
+   - Inputs: base FLUX MODEL (or ControlNet‑patched model), `flux_lora_name`, `flux_lora_strength`.  
+   - Outputs: LoRA‑patched FLUX MODEL. [youtube](https://www.youtube.com/watch?v=57ppu1WmqLU)
+
+Integration:
+
+- When `model_choice == "flux"` and a FLUX LoRA is selected, feed the LoRA‑patched FLUX model into the sampler. [youtube](https://www.youtube.com/watch?v=GYJYud-E2I0)
+- Keep CFG around 7.0, and adjust steps (e.g., 12–14) based on the FLUX LoRA’s recommended settings. [comfy](https://www.comfy.org/fr/workflows/image_flux2_klein_text_to_image-814fd547d86e/)
+
+***
+
+## 5. How to wire both branches into the combined template
+
+In the combined MLX graph you already sketched:
+
+- **ModelSwitch node**: keep it as the central selector for base Z‑Image vs FLUX models (and VAEs).  
+- Add **two parallel enhancement branches**:
+  - Z‑Image ControlNet + LoRA branch that only activates when `model_choice == "zimage"`.  
+  - FLUX ControlNet + LoRA branch that only activates when `model_choice == "flux"`.  
+
+Implementation strategy:
+
+1. **Z‑Image path**  
+   - Base model from ModelSwitch → Z‑Image LoRA loader (optional) → Z‑Image ControlNet branch (optional) → MLXSampler. [youtube](https://www.youtube.com/watch?v=qk_HdCqjNHw)
+
+2. **FLUX path**  
+   - Base model from ModelSwitch → FLUX LoRA loader (optional) → FLUX ControlNet branch (optional) → MLXSampler (with FLUX‑tuned scheduler). [docs.comfy](https://docs.comfy.org/tutorials/flux/flux-2-klein)
+
+You can do this by having separate “Model + VAE + ControlNet + LoRA” nodes for each path, then in the sampler’s `model` input you choose the appropriate output based on `model_choice` (via a small switch node or two samplers wired to different branches). [facebook](https://www.facebook.com/groups/comfyui/posts/950399787732722/)
+
+***
+
+## 6. Recommended defaults for your M4 Pro
+
+Given your hardware:
+
+- Z‑Image Turbo + ControlNet + LoRA:  
+  - 1024×1024, steps≈10, CFG≈1.0, Union ControlNet with Canny or Depth, LoRA strengths around 0.4–0.7. [youtube](https://www.youtube.com/watch?v=3Z9LTRN8ci4)
+- FLUX2 Klein + ControlNet + LoRA:  
+  - 1024×1024 (or 1536×1536), steps≈12–16, CFG≈7.0, Beta 57 or similar scheduler, LoRA strengths around 0.5–0.8 depending on LoRA. [comfy](https://www.comfy.org/fr/workflows/image_flux2_klein_text_to_image-814fd547d86e/)
+
+You can expose these as default widget values in the combined template and adjust per run.
+
+***
+
+---
+
+Below is a concrete JSON fragment for a **Z‑Image Turbo ControlNet + LoRA branch** that you can merge into your existing `image_zimage_m4pro.json`. It follows the official Z‑Image Turbo Fun Union ControlNet workflow structure (Canny‑based guidance) and uses a Power LoRA Loader–style node for LoRAs, but keeps names generic enough that you can adapt them to your installed node types. [comfy](https://comfy.org/workflows/image_z_image_turbo_fun_union_controlnet-7553d92529e0/)
+
+I’ll first outline the logic, then show the JSON fragment with node IDs and links keyed to the earlier Z‑Image template (nodes 1–13).
+
+***
+
+## ControlNet + LoRA branch design for Z‑Image Turbo
+
+### Models and paths assumed (matching SKILL.md + official docs)
+
+- Z‑Image Turbo base:  
+  - `models/diffusion_models/z_image_turbo_bf16.safetensors`  
+  - `models/text_encoders/qwen_3_4b.safetensors`  
+  - `models/vae/ae.safetensors` [docs.comfy](https://docs.comfy.org/zh-CN/tutorials/image/z-image/z-image-turbo)
+- ControlNet patch:  
+  - `models/model_patches/Z-Image-Turbo-Fun-Controlnet-Union.safetensors` (Fun Union ControlNet). [zimageturbo](https://zimageturbo.org/z-image-turbo-controlnet)
+- LoRAs (Z‑Image Turbo):  
+  - `models/loras/<your_zimage_lora>.safetensors` (style/character LoRAs placed under `models/loras/` as recommended in Z‑Image LoRA guides). [stablediffusiontutorials](https://www.stablediffusiontutorials.com/2025/11/z-image-turbo-lora-training.html)
+
+### New functionality
+
+For **Z‑Image** when `model_choice = "zimage"`:
+
+- **ControlNet branch** (optional):  
+  - Load a reference image.  
+  - Resize it to match target resolution.  
+  - Generate a Canny control map.  
+  - Load Fun Union ControlNet patch.  
+  - Apply ControlNet to the base Z‑Image model. [youtube](https://www.youtube.com/watch?v=Fx41mfbsqzI)
+
+- **LoRA branch** (optional):  
+  - Load one or more Z‑Image LoRAs.  
+  - Apply them to the (possibly ControlNet‑patched) model with a strength slider. [comfy](https://comfy.icu/node/Power-Lora-Loader-rgthree)
+
+The sampler then uses the enhanced MODEL (base → ControlNet → LoRA) instead of the plain Z‑Image Turbo MODEL.
+
+***
+
+## JSON fragment: Z‑Image ControlNet + LoRA nodes
+
+This fragment assumes your existing Z‑Image graph uses:
+
+- Node 8: Z‑Image base model loader (MODEL out).  
+- Node 11: Sampler (takes MODEL, seed, steps, cfg, conditioning, latent).  
+
+The new nodes are **IDs 14–21**, and two new links, so they don’t clash with the earlier 1–13 IDs.
+
+> Important: adjust `type` values to match the actual node types in your ComfyUI setup (for example, ControlNet loader node names can differ slightly between packs; same for Power LoRA Loader). [comfyai](https://comfyai.run/documentation/Power%20Lora%20Loader%20(rgthree))
+
+```json
+{
+  "nodes": [
+    {
+      "id": 14,
+      "type": "LoadImage",
+      "title": "ControlNet Reference Image",
+      "pos": [50, 550],
+      "size": [260, 140],
+      "widgets_values": [
+        "reference.png"               // path or default image
+      ],
+      "outputs": [
+        { "name": "IMAGE", "type": "IMAGE", "links":  [runcomfy](https://www.runcomfy.com/comfyui-nodes/rgthree-comfy/Power-Lora-Loader--rgthree-) }
+      ]
+    },
+    {
+      "id": 15,
+      "type": "ImageScaleToMaxDimension",
+      "title": "Resize Ref to Target Resolution",
+      "pos": [340, 560],
+      "size": [260, 140],
+      "inputs": [
+        { "name": "image", "type": "IMAGE", "link": 13 },
+        { "name": "max_side_length", "type": "INT", "link": 3 }   // Width from node 3
+      ],
+      "widgets_values": [
+        1024,                            // default max dimension
+        "lanczos"
+      ],
+      "outputs": [
+        { "name": "IMAGE", "type": "IMAGE", "links":  [z-image-turbo](https://z-image-turbo.ai/z-image-controlnet) }
+      ]
+    },
+    {
+      "id": 16,
+      "type": "ControlNetPreprocessorCanny",
+      "title": "ControlNet Canny Preprocessor",
+      "pos": [640, 560],
+      "size": [280, 160],
+      "inputs": [
+        { "name": "image", "type": "IMAGE", "link": 14 }
+      ],
+      "widgets_values": [
+        1.0,                             // low threshold
+        2.0                              // high threshold
+      ],
+      "outputs": [
+        { "name": "IMAGE", "type": "IMAGE", "links":  [runcomfy](https://www.runcomfy.com/comfyui-workflows/z-image-turbo-ai-toolkit-lora-inference-in-comfyui-training-matched-results) }
+      ]
+    },
+    {
+      "id": 17,
+      "type": "ControlNetLoader",
+      "title": "Load Z-Image Fun Union ControlNet",
+      "pos": [940, 560],
+      "size": [280, 140],
+      "widgets_values": [
+        "Z-Image-Turbo-Fun-Controlnet-Union"   // model_patches entry name
+      ],
+      "outputs": [
+        { "name": "CONTROL_NET", "type": "CONTROL_NET", "links":  [youtube](https://www.youtube.com/watch?v=3Z9LTRN8ci4) }
+      ]
+    },
+    {
+      "id": 18,
+      "type": "ControlNetApply",
+      "title": "Apply ControlNet to Z-Image MODEL",
+      "pos": [1240, 260],
+      "size": [350, 200],
+      "inputs": [
+        { "name": "model", "type": "MODEL", "link": 8 },   // base Z-Image model from node 8
+        { "name": "control_net", "type": "CONTROL_NET", "link": 16 },
+        { "name": "image", "type": "IMAGE", "link": 15 },
+        { "name": "strength", "type": "FLOAT", "link": null }
+      ],
+      "widgets_values": [
+        0.9                               // default control strength (0.9–0.95 recommended)
+      ],
+      "outputs": [
+        { "name": "MODEL", "type": "MODEL", "links":  [x](https://x.com/sora_biz/status/1848343652214710642) }
+      ]
+    },
+    {
+      "id": 19,
+      "type": "PrimitiveCombo",
+      "title": "Z-Image LoRA Name",
+      "pos": [1240, 480],
+      "size": [260, 120],
+      "widgets_values": [
+        "none",                          // current value
+        "none",
+        [
+          "none",
+          "Z-Image-Turbo-pencil-sketch",
+          "Z-Image-Turbo-Ghibli-Style"
+        ]
+      ],
+      "outputs": [
+        { "name": "value", "type": "STRING", "links":  [youtube](https://www.youtube.com/watch?v=3eWNocEJ8BM) }
+      ]
+    },
+    {
+      "id": 20,
+      "type": "PrimitiveFloat",
+      "title": "Z-Image LoRA Strength",
+      "pos": [1240, 620],
+      "size": [200, 80],
+      "widgets_values": [0.5],
+      "outputs": [
+        { "name": "value", "type": "FLOAT", "links":  [youtube](https://www.youtube.com/watch?v=ttIJClSc8Vk) }
+      ]
+    },
+    {
+      "id": 21,
+      "type": "PowerLoraLoader",          // rgthree Power LoRA Loader or equivalent
+      "title": "Apply Z-Image LoRA",
+      "pos": [1580, 260],
+      "size": [360, 220],
+      "inputs": [
+        { "name": "model", "type": "MODEL", "link": 17 },   // MODEL from ControlNetApply
+        { "name": "clip", "type": "CLIP", "link": null },   // optional CLIP; can use Qwen CLIP if required
+        { "name": "lora_name", "type": "STRING", "link": 18 },
+        { "name": "strength", "type": "FLOAT", "link": 19 }
+      ],
+      "widgets_values": [
+        "z_image_turbo_bf16",            // base model name for internal stack (example)
+        "qwen_3_4b"                      // CLIP name if node requires it
+      ],
+      "outputs": [
+        { "name": "MODEL", "type": "MODEL", "links":  [zimage](https://zimage.net/blog/z-image-turbo-fun-controlnet-union) }
+      ]
+    }
+  ],
+  "links": [
+    { "id": 13, "from_node": 14, "from_output": 0, "to_node": 15, "to_input": 0 },
+    { "id": 14, "from_node": 15, "from_output": 0, "to_node": 16, "to_input": 0 },
+    { "id": 15, "from_node": 16, "from_output": 0, "to_node": 18, "to_input": 2 },
+    { "id": 16, "from_node": 17, "from_output": 0, "to_node": 18, "to_input": 1 },
+    { "id": 17, "from_node": 18, "from_output": 0, "to_node": 21, "to_input": 0 },
+    { "id": 18, "from_node": 19, "from_output": 0, "to_node": 21, "to_input": 2 },
+    { "id": 19, "from_node": 20, "from_output": 0, "to_node": 21, "to_input": 3 },
+    { "id": 20, "from_node": 21, "from_output": 0, "to_node": 11, "to_input": 0 }
+  ]
+}
+```
+
+***
+
+## How this fragment hooks into your existing `image_zimage_m4pro.json`
+
+1. **Base Z‑Image model**  
+   - Node 8 still loads `z_image_turbo_bf16` (MODEL out). [docs.comfy](https://docs.comfy.org/tutorials/image/z-image/z-image-turbo)
+   - Node 18 (ControlNetApply) takes that MODEL and outputs a **ControlNet‑enhanced MODEL**.
+
+2. **LoRA application**  
+   - Node 21 (PowerLoraLoader) takes the ControlNet‑enhanced MODEL and applies a selected LoRA with a given strength, outputting a **LoRA‑patched MODEL**. [runcomfy](https://www.runcomfy.com/comfyui-nodes/rgthree-comfy/Power-Lora-Loader--rgthree-)
+
+3. **Sampler input change**  
+   - In your original nodes, `KSampler` (or `MLXSampler`) node 11 currently takes `model` from node 8.  
+   - After merging this fragment, change node 11’s `model` input link to come from node 21 instead:  
+     - Replace the link `{ "from_node": 8, ... "to_node": 11, "to_input": 0 }`  
+     - With `{ "from_node": 21, "from_output": 0, "to_node": 11, "to_input": 0 }` (link id 20 above).  
+
+4. **Optional usage**  
+
+- **ControlNet only**:  
+  - Set `Z-Image LoRA Name` to `"none"`; the Power LoRA Loader should pass through the model unchanged (or you can implement it to bypass when `"none"` is selected). [z-image-turbo](https://z-image-turbo.ai/z-image-controlnet)
+- **LoRA only (no ControlNet)**:  
+  - Bypass the ControlNetApply node by linking node 8 (MODEL) directly into node 21 (`model` input), and keep ControlNet strength at 0 or control nodes disconnected. [youtube](https://www.youtube.com/watch?v=o_yT7pEyRP8)
+
+On your M4 Pro, recommended defaults when both branches are active:  
+
+- Steps ≈10, CFG ≈1.0, 1024×1024, ControlNet strength ≈0.9, LoRA strength ≈0.4–0.7. [youtube](https://www.youtube.com/watch?v=3Z9LTRN8ci4)
+
+***
+
+## Practical merging notes
+
+- Install **ControlNet Union** and put `Z-Image-Turbo-Fun-Controlnet-Union.safetensors` in `models/model_patches/` exactly as in the official Comfy docs; otherwise the `ControlNetLoader` won’t see it. [zimageturbo](https://zimageturbo.org/z-image-turbo-controlnet)
+- Install **RGThree ComfyUI nodes** (Power LoRA Loader), via ComfyUI’s Custom Nodes Manager (“rgthree’s ComfyUI Nodes”) so node type `PowerLoraLoader` (or its exact name) becomes available. [x](https://x.com/sora_biz/status/1848343652214710642)
+- After merging, test with simple prompts and a single LoRA at low strength to verify the wiring; then enable Canny ControlNet and verify the model follows structure from the reference image as in the Union ControlNet demo workflows. [youtube](https://www.youtube.com/watch?v=3eWNocEJ8BM)
+
+If you want, next I can do a similar concrete fragment for the **FLUX2 Klein ControlNet + LoRA branch**, tuned for FLUX schedulers and LoRA loaders, so your combined template has full parity between Z‑Image and FLUX on the M4 Pro.
+
+---
+
+https://www.perplexity.ai/search/please-meticulously-plan-to-do-OEkzQMB2S.itkOizy.61WQ 

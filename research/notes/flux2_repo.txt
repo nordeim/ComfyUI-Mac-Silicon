@@ -1,0 +1,509 @@
+# GitHub - black-forest-labs/flux2: Official inference repo for FLUX.2 models
+# URL: https://github.com/black-forest-labs/flux2
+# Published: 
+
+GitHub - black-forest-labs/flux2: Official inference repo for FLUX.2 models · GitHub 
+
+ Skip to content 
+
+ Navigation Menu
+
+ Toggle navigation 
+
+ Sign in
+
+ Appearance settings 
+
+ Platform AI CODE CREATION GitHub Copilot Write better code with AI 
+ GitHub Copilot app Direct agents from issue to merge 
+ MCP Registry New Integrate external tools 
+ 
+ DEVELOPER WORKFLOWS Actions Automate any workflow 
+ Codespaces Instant dev environments 
+ Issues Plan and track work 
+ Code Review Manage code changes 
+ 
+ APPLICATION SECURITY GitHub Advanced Security Find and fix vulnerabilities 
+ Code security Secure your code as you build 
+ Secret protection Stop leaks before they start 
+ 
+ EXPLORE Why GitHub 
+ Documentation 
+ Blog 
+ Changelog 
+ Marketplace 
+ 
+ View all features 
+ Solutions BY COMPANY SIZE Enterprises 
+ Small and medium teams 
+ Startups 
+ Nonprofits 
+ 
+ BY USE CASE App Modernization 
+ DevSecOps 
+ DevOps 
+ CI/CD 
+ View all use cases 
+ 
+ BY INDUSTRY Healthcare 
+ Financial services 
+ Manufacturing 
+ Government 
+ View all industries 
+ 
+ View all solutions 
+ Resources EXPLORE BY TOPIC AI 
+ Software Development 
+ DevOps 
+ Security 
+ View all topics 
+ 
+ EXPLORE BY TYPE Customer stories 
+ Events & webinars 
+ Ebooks & reports 
+ Business insights 
+ GitHub Skills 
+ 
+ SUPPORT & SERVICES Documentation 
+ Customer support 
+ Community forum 
+ Trust center 
+ Partners 
+ 
+ View all resources 
+ Open Source COMMUNITY GitHub Sponsors Fund open source developers 
+ 
+ PROGRAMS Security Lab 
+ Maintainer Community 
+ Accelerator 
+ GitHub Stars 
+ Archive Program 
+ 
+ REPOSITORIES Topics 
+ Trending 
+ Collections 
+
+ Enterprise ENTERPRISE SOLUTIONS Enterprise platform AI-powered developer platform 
+ 
+ AVAILABLE ADD-ONS GitHub Advanced Security Enterprise-grade security features 
+ Copilot for Business Enterprise-grade AI features 
+ Premium Support Enterprise-grade 24/7 support 
+
+ Pricing 
+
+ Search or jump to... 
+
+ Search code, repositories, users, issues, pull requests...
+
+ --> 
+
+ Search
+
+ Clear 
+
+ Search syntax tips 
+
+ Provide feedback
+
+ --> 
+ We read every piece of feedback, and take your input very seriously.
+
+ Include my email address so I can be contacted 
+
+ Cancel
+ 
+ Submit feedback
+
+ Saved searches
+
+ Use saved searches to filter your results more quickly
+
+ --> 
+
+ Name 
+
+ Query 
+
+ To see all available qualifiers, see our documentation .
+
+ Cancel
+ 
+ Create saved search
+
+ Sign in
+
+ Sign up
+
+ Appearance settings 
+
+ Resetting focus 
+
+ You signed in with another tab or window. Reload to refresh your session. 
+ You signed out in another tab or window. Reload to refresh your session. 
+ You switched accounts on another tab or window. Reload to refresh your session. 
+
+ Dismiss alert 
+
+ {{ message }} 
+
+ Uh oh!
+
+ There was an error while loading. Please reload this page .
+
+ black-forest-labs
+ 
+ / 
+ 
+ flux2 
+
+ Public 
+
+ Notifications
+ You must be signed in to change notification settings 
+
+ Fork
+ 174 
+
+ Star
+ 2.5k 
+
+ Code 
+
+ Issues 
+ 32 
+
+ Pull requests 
+ 3 
+
+ Actions 
+
+ Projects 
+
+ Security and quality 
+ 0 
+
+ Insights 
+
+ Additional navigation options 
+
+ Code
+
+ Issues
+
+ Pull requests
+
+ Actions
+
+ Projects
+
+ Security and quality
+
+ Insights
+
+ black-forest-labs/flux2
+
+ main 1 Branch 0 Tags Go to file Code Open more actions menu Folders and files
+
+ Name Name Last commit message Last commit date Latest commit
+
+ boeselfr FLUX.2 [klein] KV success Mar 12, 2026 50fe516 · Mar 12, 2026 History
+
+ 12 Commits Open commit details 12 Commits .github/ workflows .github/ workflows FLUX.2 launch Nov 25, 2025 assets assets FLUX.2 [klein] Jan 15, 2026 docs docs FLUX.2 [klein] KV Mar 12, 2026 model_cards model_cards FLUX.2 launch Nov 25, 2025 model_licenses model_licenses FLUX.2 [klein] Jan 15, 2026 scripts scripts FLUX.2 [klein] KV Mar 12, 2026 src/ flux2 src/ flux2 FLUX.2 [klein] KV Mar 12, 2026 .gitignore .gitignore FLUX.2 launch Nov 25, 2025 .pre-commit-config.yaml .pre-commit-config.yaml FLUX.2 launch Nov 25, 2025 .yamlfmt.yaml .yamlfmt.yaml FLUX.2 launch Nov 25, 2025 LICENSE.md LICENSE.md Create LICENSE.md Nov 25, 2025 README.md README.md FLUX.2 [klein] KV Mar 12, 2026 pyproject.toml pyproject.toml FLUX.2 [klein] Jan 15, 2026 View all files Repository files navigation
+
+ README 
+ Apache-2.0 license 
+ More items FLUX.2
+
+ Frontier Visual Intelligence — State-of-the-art image generation and editing from Black Forest Labs .
+
+ API Docs •
+ Hugging Face •
+ Blog 
+
+ This repo contains minimal inference code to run image generation & editing with our FLUX.2 open-weight models.
+
+ News
+
+ [15.01.2026] Today, we release the FLUX.2 [klein] family of models, our fastest models yet. Sub-second generation on consumer GPUs. Read more about it in our blog post .
+
+ [25.11.2025] We are releasing FLUX.2 [dev], a 32B parameter model for text-to-image generation, and image editing (single reference image and multiple reference images).
+
+ Model Overview
+
+ Name 
+ Step-distilled 
+ Guidance-distilled 
+ Text-to-Image 
+ Image Editing (Single reference) 
+ Image Editing (Multi-reference) 
+ License 
+
+ FLUX.2 [klein] 4B 
+ ✅ 
+ ✅ 
+ ✅ 
+ ✅ 
+ ✅ 
+ apache-2.0 
+
+ FLUX.2 [klein] 9B 
+ ✅ 
+ ✅ 
+ ✅ 
+ ✅ 
+ ✅ 
+ FLUX Non-Commercial License 
+
+ FLUX.2 [klein] 9B KV 
+ ✅ 
+ ✅ 
+ ✅ 
+ ✅ 
+ ✅ 
+ FLUX Non-Commercial License 
+
+ FLUX.2 [klein] 4B Base 
+ ❌ 
+ ❌ 
+ ✅ 
+ ✅ 
+ ✅ 
+ apache-2.0 
+
+ FLUX.2 [klein] 9B Base 
+ ❌ 
+ ❌ 
+ ✅ 
+ ✅ 
+ ✅ 
+ FLUX Non-Commercial License 
+
+ FLUX.2 [dev] 
+ ❌ 
+ ✅ 
+ ✅ 
+ ✅ 
+ ✅ 
+ FLUX Non-Commercial License 
+
+ All models support : Text-to-Image ✅ | Single-ref Editing ✅ | Multi-ref Editing ✅
+
+ Which Model Should I Use?
+
+ Need 
+ Recommended 
+
+ Real-time apps, interactive workflows 
+ [klein] 4B, 9B, or 9B KV (distilled) 
+
+ Consumer GPU (e.g. RTX 3090/4070) 
+ [klein] 4B 
+
+ Fine-tuning, LoRA training 
+ [klein] Base or FLUX.2 [dev] 
+
+ Maximum quality, no latency constraints 
+ FLUX.2 [dev] 
+
+ FLUX.2 [klein] 
+
+ FLUX.2 [klein] is our fastest model family — generating and editing (multiple) images in under a second without sacrificing quality. Built for real-time applications, creative iteration, and deployment on consumer hardware.
+
+ Key Capabilities
+
+ Sub-second inference — Generate or edit images under a second on modern hardware
+
+ Unified generation & editing — Text-to-image, image editing, and multi-reference in one model
+
+ Runs on consumer GPUs — Klein 4B fits in ~8GB VRAM (RTX 3090/4070 and up)
+
+ Apache 2.0 on 4B — Open-source, fine-tuning, and customization
+
+ Performance
+
+ Klein models define the Pareto frontier for quality vs. latency and VRAM across text-to-image, single-reference editing, and multi-reference generation:
+
+ Higher Elo + Lower Latency/VRAM = Better. 
+ The Klein Family
+
+ Model 
+ Best For 
+
+ [klein] 4B 
+ Maximum speed, consumer hardware, edge deployment 
+
+ [klein] 9B 
+ High quality text-to-image; for image editing, 9B KV is faster at equal quality 
+
+ [klein] 9B KV 
+ Best quality-to-latency ratio, faster than 4B for multi-reference image editing via KV caching 
+
+ [klein] 4B Base 
+ Fine-tuning on limited hardware, full customization 
+
+ [klein] 9B Base 
+ Research, LoRA training, maximum output diversity 
+
+ Distilled vs Base: 
+
+ Use Distilled (4-step) for production apps and real-time generation
+
+ Use Base (50-step) for fine-tuning, LoRA training, and maximum flexibility
+
+ Licensing: 4B models are Apache 2.0 . 9B models use the FLUX.2-dev Non-Commercial License .
+
+ Text-to-image examples
+
+ Example focused on realism
+
+ Example focused on output diversity
+
+ Editing examples
+
+ FLUX.2 [dev] 
+
+ FLUX.2 [dev] is a 32B parameter flow matching transformer model capable of generating and editing (multiple) images. The model is released under the FLUX.2-dev Non-Commercial License and can be found here .
+
+ Note that the below script for FLUX.2 [dev] needs considerable amount of VRAM (H100-equivalent GPU). We partnered with Hugging Face to make quantized versions that run on consumer hardware; below you can find instructions on how to run it on a RTX 4090 with a remote text encoder, for other quantization sizes and combinations, check the diffusers quantization guide here .
+
+ Text-to-image examples
+
+ Editing examples
+
+ Prompt upsampling
+
+ FLUX.2 [dev] benefits significantly from prompt upsampling. The inference script below offers the option to use both local prompt upsampling with the same model we use for text encoding ( Mistral-Small-3.2-24B-Instruct-2506 ), or alternatively, use any model on OpenRouter via an API call.
+
+ See the upsampling guide for additional details and guidance on when to use upsampling.
+
+ FLUX.2 autoencoder
+
+ The FLUX.2 autoencoder has considerably improved over the FLUX.1 autoencoder . The autoencoder is released under Apache 2.0 and can be found here . For more information, see our technical blogpost .
+
+ Local installation
+
+ The inference code was tested on GB200 using CUDA 12.9 and Python 3.12.
+
+ python3.12 -m venv .venv
+ source .venv/bin/activate
+pip install -e . --extra-index-url https://download.pytorch.org/whl/cu129 --no-cache-dir 
+
+ Run the CLI
+
+ Before running the CLI, you may download the weights from here and set the following environment variables.
+
+ export FLUX2_MODEL_PATH= " <flux2_path> " 
+ export AE_MODEL_PATH= " <ae_path> " 
+ export KLEIN_4B_MODEL_PATH= " <klein_4b_path> " 
+ export KLEIN_4B_BASE_MODEL_PATH= " <klein_4b_base_path> " 
+ export KLEIN_9B_MODEL_PATH= " <klein_9b_path> " 
+ export KLEIN_9B_KV_MODEL_PATH= " <klein_9b_kv_path> " 
+ export KLEIN_9B_BASE_MODEL_PATH= " <klein_9b_base_path> " 
+
+ If you don't set the environment variables, the weights will be downloaded automatically.
+
+ You can start an interactive session to do both text to image generation as well as editing (one or multiple) images with the following command:
+
+ PYTHONPATH=src python scripts/cli.py 
+
+ Watermarking
+
+ We've added an option to embed invisible watermarks directly into the generated images
+via the invisible watermark library .
+
+ Additionally, we are recommending implementing a solution to mark the metadata of your outputs, such as C2PA 
+
+ Citation
+
+ If you find the provided code or models useful for your research, consider citing them as:
+
+ @misc { flux-2-2025 ,
+ author = { Black Forest Labs } ,
+ title = { {FLUX.2: Frontier Visual Intelligence} } ,
+ year = { 2025 } ,
+ howpublished = { \url{https://bfl.ai/blog/flux-2} } ,
+} 
+
+ About
+
+ Official inference repo for FLUX.2 models
+
+ Resources
+
+ Readme
+
+ License
+
+ Apache-2.0 license
+
+ Uh oh!
+
+ There was an error while loading. Please reload this page .
+
+ Activity 
+
+ Custom properties 
+
+ Stars
+
+ 2.5k 
+ stars 
+
+ Watchers
+
+ 10 
+ watching 
+
+ Forks
+
+ 174 
+ forks 
+
+ Report repository
+
+ Releases 
+
+ No releases published 
+
+ Packages
+ 0 
+
+ No packages published 
+
+ Uh oh!
+
+ There was an error while loading. Please reload this page .
+
+ Contributors
+ 5 
+
+ Languages
+
+ Python 
+ 100.0% 
+
+ Footer
+
+ © 2026 GitHub, Inc.
+
+ Footer navigation
+
+ Terms 
+
+ Privacy 
+
+ Security 
+
+ Status 
+
+ Community 
+
+ Docs 
+
+ Contact 
+
+ Manage cookies
+
+ Do not share my personal information
+
+ You can’t perform that action at this time.

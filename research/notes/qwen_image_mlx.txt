@@ -1,0 +1,107 @@
+# mlx-community/Qwen-Image-2512-4bit · Hugging Face
+# URL: https://huggingface.co/mlx-community/Qwen-Image-2512-4bit
+# Published: 
+
+mlx-community/Qwen-Image-2512-4bit · Hugging Face 
+
+ Hugging Face Models 
+ Datasets 
+ Spaces 
+ Buckets new 
+ Docs 
+ Enterprise 
+ Pricing 
+ Website Tasks 
+ HuggingChat 
+ Collections 
+ Languages 
+ Organizations 
+ 
+ Community Blog 
+ Posts 
+ Daily Papers 
+ Learn 
+ Discord 
+ Forum 
+ GitHub 
+ 
+ Solutions Team & Enterprise 
+ Hugging Face PRO 
+ Enterprise Support 
+ Inference Providers 
+ Inference Endpoints 
+ Storage Buckets 
+
+ Log In 
+ Sign Up 
+ mlx-community / Qwen-Image-2512-4bit like 5 Follow MLX Community 14.5k 
+
+ Text-to-Image Safetensors MLX mflux qwen image-generation apple-silicon diffusion License: apache-2.0 Model card Files Files and versions xet Community 1 Copy to bucket new Use this model Instructions to use mlx-community/Qwen-Image-2512-4bit with libraries, inference providers, notebooks, and local apps. Follow these links to get started.
+
+ Libraries
+ MLX How to use mlx-community/Qwen-Image-2512-4bit with MLX:
+
+ # Download the model from the Hub
+pip install huggingface_hub[hf_xet]
+
+huggingface-cli download --local-dir Qwen-Image-2512-4bit mlx-community/Qwen-Image-2512-4bit 
+ Notebooks
+ Google Colab 
+ Kaggle 
+ Local Apps Settings 
+ LM Studio 
+ Qwen-Image-2512-4bit-MLX Quick Start 
+ Model Details 
+ Other Quantizations 
+ License 
+
+ Qwen-Image-2512-4bit-MLX
+
+ MLX-optimized 4-bit quantized version of Qwen-Image-2512 for Apple Silicon.
+
+ Quick Start
+
+ pip install mflux
+
+mflux-generate-qwen \
+ --model mlx-community/Qwen-Image-2512-4bit \
+ --prompt "A photorealistic cat wearing a tiny top hat" \
+ --steps 20
+
+ Model Details
+
+ Base Model: Qwen/Qwen-Image-2512 (Dec 31, 2025)
+
+ Quantization: 4-bit
+
+ Framework: MLX (Apple Silicon optimized)
+
+ Converted with: mflux 0.14.0
+
+ Other Quantizations
+
+ 8-bit (34GB)
+
+ 6-bit (29GB)
+
+ 5-bit (27GB)
+
+ 4-bit (24GB)
+
+ 3-bit (22GB)
+
+ License
+
+ Apache 2.0 (same as base model)
+
+ Downloads last month -
+
+ Downloads are not tracked for this model. How to track MLX Hardware compatibility Log In to add your hardware Quantized
+
+ MLX 25.9 GB Inference Providers NEW Text-to-Image This model isn't deployed by any Inference Provider. 🙋 Ask for provider support Model tree for mlx-community/Qwen-Image-2512-4bit 
+
+ Base model
+
+ Qwen/Qwen-Image-2512 Finetuned ( 30 ) this model System theme Company TOS Privacy About Careers Website Models Datasets Spaces Pricing Docs 
+
+ Inference providers allow you to run inference using different serverless providers.

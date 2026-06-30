@@ -1,0 +1,474 @@
+# GitHub - argmaxinc/DiffusionKit: On-device Image Generation for Apple Silicon
+# URL: https://github.com/argmaxinc/DiffusionKit
+# Published: 
+
+GitHub - argmaxinc/DiffusionKit: On-device Image Generation for Apple Silicon · GitHub 
+
+ Skip to content 
+
+ Navigation Menu
+
+ Toggle navigation 
+
+ Sign in
+
+ Appearance settings 
+
+ Platform AI CODE CREATION GitHub Copilot Write better code with AI 
+ GitHub Copilot app Direct agents from issue to merge 
+ MCP Registry New Integrate external tools 
+ 
+ DEVELOPER WORKFLOWS Actions Automate any workflow 
+ Codespaces Instant dev environments 
+ Issues Plan and track work 
+ Code Review Manage code changes 
+ 
+ APPLICATION SECURITY GitHub Advanced Security Find and fix vulnerabilities 
+ Code security Secure your code as you build 
+ Secret protection Stop leaks before they start 
+ 
+ EXPLORE Why GitHub 
+ Documentation 
+ Blog 
+ Changelog 
+ Marketplace 
+ 
+ View all features 
+ Solutions BY COMPANY SIZE Enterprises 
+ Small and medium teams 
+ Startups 
+ Nonprofits 
+ 
+ BY USE CASE App Modernization 
+ DevSecOps 
+ DevOps 
+ CI/CD 
+ View all use cases 
+ 
+ BY INDUSTRY Healthcare 
+ Financial services 
+ Manufacturing 
+ Government 
+ View all industries 
+ 
+ View all solutions 
+ Resources EXPLORE BY TOPIC AI 
+ Software Development 
+ DevOps 
+ Security 
+ View all topics 
+ 
+ EXPLORE BY TYPE Customer stories 
+ Events & webinars 
+ Ebooks & reports 
+ Business insights 
+ GitHub Skills 
+ 
+ SUPPORT & SERVICES Documentation 
+ Customer support 
+ Community forum 
+ Trust center 
+ Partners 
+ 
+ View all resources 
+ Open Source COMMUNITY GitHub Sponsors Fund open source developers 
+ 
+ PROGRAMS Security Lab 
+ Maintainer Community 
+ Accelerator 
+ GitHub Stars 
+ Archive Program 
+ 
+ REPOSITORIES Topics 
+ Trending 
+ Collections 
+
+ Enterprise ENTERPRISE SOLUTIONS Enterprise platform AI-powered developer platform 
+ 
+ AVAILABLE ADD-ONS GitHub Advanced Security Enterprise-grade security features 
+ Copilot for Business Enterprise-grade AI features 
+ Premium Support Enterprise-grade 24/7 support 
+
+ Pricing 
+
+ Search or jump to... 
+
+ Search code, repositories, users, issues, pull requests...
+
+ --> 
+
+ Search
+
+ Clear 
+
+ Search syntax tips 
+
+ Provide feedback
+
+ --> 
+ We read every piece of feedback, and take your input very seriously.
+
+ Include my email address so I can be contacted 
+
+ Cancel
+ 
+ Submit feedback
+
+ Saved searches
+
+ Use saved searches to filter your results more quickly
+
+ --> 
+
+ Name 
+
+ Query 
+
+ To see all available qualifiers, see our documentation .
+
+ Cancel
+ 
+ Create saved search
+
+ Sign in
+
+ Sign up
+
+ Appearance settings 
+
+ Resetting focus 
+
+ You signed in with another tab or window. Reload to refresh your session. 
+ You signed out in another tab or window. Reload to refresh your session. 
+ You switched accounts on another tab or window. Reload to refresh your session. 
+
+ Dismiss alert 
+
+ {{ message }} 
+
+ Uh oh!
+
+ There was an error while loading. Please reload this page .
+
+ This repository was archived by the owner on Mar 21, 2026. It is now read-only.
+
+ argmaxinc
+ 
+ / 
+ 
+ DiffusionKit 
+
+ Public archive 
+
+ Notifications
+ You must be signed in to change notification settings 
+
+ Fork
+ 45 
+
+ Star
+ 704 
+
+ Code 
+
+ Issues 
+ 12 
+
+ Pull requests 
+ 0 
+
+ Actions 
+
+ Projects 
+
+ Security and quality 
+ 0 
+
+ Insights 
+
+ Additional navigation options 
+
+ Code
+
+ Issues
+
+ Pull requests
+
+ Actions
+
+ Projects
+
+ Security and quality
+
+ Insights
+
+ argmaxinc/DiffusionKit
+
+ main Branches Tags Go to file Code Open more actions menu Folders and files
+
+ Name Name Last commit message Last commit date Latest commit
+
+ History
+
+ 142 Commits 142 Commits .github .github assets assets python python swift swift .gitignore .gitignore .pre-commit-config.yaml .pre-commit-config.yaml .swift-format .swift-format CONTRIBUTING.md CONTRIBUTING.md LICENSE LICENSE Makefile Makefile Package.resolved Package.resolved Package.swift Package.swift README.md README.md requirements.txt requirements.txt setup.py setup.py View all files Repository files navigation
+
+ README 
+ Contributing 
+ MIT license 
+ More items DiffusionKit
+
+ Run Diffusion Models on Apple Silicon with Core ML and MLX
+
+ This repository comprises
+
+ diffusionkit , a Python package for converting PyTorch models to Core ML format and performing image generation with MLX in Python
+
+ DiffusionKit , a Swift package for on-device inference of diffusion models using Core ML and MLX
+
+ Installation
+
+ The following installation steps are required for:
+
+ MLX inference
+
+ PyTorch to Core ML model conversion
+
+ Python Environment Setup
+
+ conda create -n diffusionkit python=3.11 -y
+conda activate diffusionkit
+ cd /path/to/diffusionkit/repo
+pip install -e . 
+
+ Hugging Face Hub Credentials
+
+ Click to expand 
+ Stable Diffusion 3 requires users to accept the terms before downloading the checkpoint.
+
+ FLUX.1-dev also requires users to accept the terms before downloading the checkpoint.
+
+ Once you accept the terms, sign in with your Hugging Face hub READ token as below:
+
+ [!IMPORTANT]
+If using a fine-grained token, it is also necessary to edit permissions to allow Read access to contents of all public gated repos you can access 
+
+ huggingface-cli login --token YOUR_HF_HUB_TOKEN 
+
+ Converting Models from PyTorch to Core ML
+
+ Click to expand 
+ Step 1: Follow the installation steps from the previous section
+
+ Step 2: Verify you've accepted the StabilityAI license terms and have allowed gated access on your HuggingFace token 
+
+ Step 3: Prepare the denoise model (MMDiT) Core ML model files ( .mlpackage )
+
+ python -m python.src.diffusionkit.tests.torch2coreml.test_mmdit --sd3-ckpt-path stabilityai/stable-diffusion-3-medium --model-version 2b -o < output-mlpackages-directory > --latent-size {64, 128} 
+
+ Step 4: Prepare the VAE Decoder Core ML model files ( .mlpackage )
+
+ python -m python.src.diffusionkit.tests.torch2coreml.test_vae --sd3-ckpt-path stabilityai/stable-diffusion-3-medium -o < output-mlpackages-directory > --latent-size {64, 128} 
+
+ Note:
+
+ --sd3-ckpt-path can be a path any HuggingFace repo (e.g. stabilityai/stable-diffusion-3-medium ) OR a path to a local sd3_medium.safetensors file
+
+ Image Generation with Python MLX
+
+ Click to expand 
+ CLI
+
+ Most simple:
+
+ diffusionkit-cli --prompt " a photo of a cat " --output-path < /path/to/output/image.png > 
+
+ Some notable optional arguments for:
+
+ Reproduciblity of results, use --seed 
+
+ image-to-image, use --image-path (path to input image) and --denoise (value between 0. and 1.)
+
+ Enabling T5 encoder in SD3, use --t5 (FLUX must use T5 regardless of this argument)
+
+ Different resolutions, use --height and --width 
+
+ Using a local checkpoint, use --local-ckpt </path/to/ckpt.safetensors> (e.g. ~/models/stable-diffusion-3-medium/sd3_medium.safetensors ).
+
+ Please refer to the help menu for all available arguments: diffusionkit-cli -h .
+
+ Note: When using FLUX.1-dev , verify you've accepted the FLUX.1-dev licence and have allowed gated access on your HuggingFace token 
+
+ Code
+
+ For Stable Diffusion 3:
+
+ from diffusionkit . mlx import DiffusionPipeline 
+ pipeline = DiffusionPipeline (
+ shift = 3.0 ,
+ use_t5 = False ,
+ model_version = "argmaxinc/mlx-stable-diffusion-3-medium" ,
+ low_memory_mode = True ,
+ a16 = True ,
+ w16 = True ,
+) 
+
+ For FLUX:
+
+ from diffusionkit . mlx import FluxPipeline 
+ pipeline = FluxPipeline (
+ shift = 1.0 ,
+ model_version = "argmaxinc/mlx-FLUX.1-schnell" , # model_version="argmaxinc/mlx-FLUX.1-dev" for FLUX.1-dev 
+ low_memory_mode = True ,
+ a16 = True ,
+ w16 = True ,
+) 
+
+ Finally, to generate the image, use the generate_image() function:
+
+ HEIGHT = 512 
+ WIDTH = 512 
+ NUM_STEPS = 4 # 4 for FLUX.1-schnell, 50 for SD3 and FLUX.1-dev 
+ CFG_WEIGHT = 0. # for FLUX.1-schnell, 5. for SD3 
+
+ image , _ = pipeline . generate_image (
+ "a photo of a cat" ,
+ cfg_weight = CFG_WEIGHT ,
+ num_steps = NUM_STEPS ,
+ latent_size = ( HEIGHT // 8 , WIDTH // 8 ),
+) 
+
+ Some notable optional arguments:
+
+ For image-to-image, use image_path (path to input image) and denoise (value between 0. and 1.) input variables.
+
+ For seed, use seed input variable.
+
+ For negative prompt, use negative_text input variable.
+
+ The generated image can be saved with:
+
+ image . save ( "path/to/save.png" ) 
+
+ Image Generation with Swift
+
+ Click to expand 
+ Core ML Swift
+
+ Apple Core ML Stable Diffusion is the initial Core ML backend for DiffusionKit. Stable Diffusion 3 support is upstreamed to that repository while we build the holistic Swift inference package.
+
+ MLX Swift
+
+ 🚧
+
+ License
+
+ DiffusionKit is released under the MIT License. See LICENSE for more details.
+
+ Citation
+
+ If you use DiffusionKit for something cool or just find it useful, please drop us a note at info@takeargmax.com !
+
+ If you use DiffusionKit for academic work, here is the BibTeX:
+
+ @misc { diffusionkit-argmax ,
+ title = { DiffusionKit } ,
+ author = { Argmax, Inc. } ,
+ year = { 2024 } ,
+ URL = { https://github.com/argmaxinc/DiffusionKit } 
+} 
+
+ About
+
+ On-device Image Generation for Apple Silicon
+
+ argmaxinc.com 
+
+ Resources
+
+ Readme
+
+ License
+
+ MIT license
+
+ Contributing
+
+ Contributing
+
+ Uh oh!
+
+ There was an error while loading. Please reload this page .
+
+ Activity 
+
+ Custom properties 
+
+ Stars
+
+ 704 
+ stars 
+
+ Watchers
+
+ 14 
+ watching 
+
+ Forks
+
+ 45 
+ forks 
+
+ Report repository
+
+ Releases 
+
+ No releases published 
+
+ Packages
+ 0 
+
+ No packages published 
+
+ Uh oh!
+
+ There was an error while loading. Please reload this page .
+
+ Contributors
+ 6 
+
+ Languages
+
+ Python 
+ 97.4% 
+
+ Swift 
+ 1.5% 
+
+ Makefile 
+ 1.1% 
+
+ Footer
+
+ © 2026 GitHub, Inc.
+
+ Footer navigation
+
+ Terms 
+
+ Privacy 
+
+ Security 
+
+ Status 
+
+ Community 
+
+ Docs 
+
+ Contact 
+
+ Manage cookies
+
+ Do not share my personal information
+
+ You can’t perform that action at this time.

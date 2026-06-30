@@ -1,0 +1,110 @@
+# briaai/Fibo-mlx-4bit · Hugging Face
+# URL: https://huggingface.co/briaai/Fibo-mlx-4bit
+# Published: 
+
+briaai/Fibo-mlx-4bit · Hugging Face 
+
+ Hugging Face Models 
+ Datasets 
+ Spaces 
+ Buckets new 
+ Docs 
+ Enterprise 
+ Pricing 
+ Website Tasks 
+ HuggingChat 
+ Collections 
+ Languages 
+ Organizations 
+ 
+ Community Blog 
+ Posts 
+ Daily Papers 
+ Learn 
+ Discord 
+ Forum 
+ GitHub 
+ 
+ Solutions Team & Enterprise 
+ Hugging Face PRO 
+ Enterprise Support 
+ Inference Providers 
+ Inference Endpoints 
+ Storage Buckets 
+
+ Log In 
+ Sign Up 
+ briaai / Fibo-mlx-4bit like 6 Follow BRIA AI 14.5k 
+
+ Diffusers English MLX arxiv: 2511.06876 License: cc-by-nc-4.0 Model card Files Files and versions xet Community Copy to bucket new Use this model Instructions to use briaai/Fibo-mlx-4bit with libraries, inference providers, notebooks, and local apps. Follow these links to get started.
+
+ Libraries
+ Diffusers How to use briaai/Fibo-mlx-4bit with Diffusers:
+
+ pip install -U diffusers transformers accelerate import torch
+from diffusers import DiffusionPipeline
+
+# switch to "mps" for apple devices
+pipe = DiffusionPipeline.from_pretrained("briaai/Fibo-mlx-4bit", dtype=torch.bfloat16, device_map="cuda")
+
+prompt = "Astronaut in a jungle, cold color palette, muted colors, detailed, 8k"
+image = pipe(prompt).images[0] 
+ Notebooks
+ Google Colab 
+ Kaggle 
+ Fibo MLX 4-bit Run SOTA on Your Mac 
+ About the Project FIBO 
+ Mflux 
+ 
+ License & Access 
+
+ FIBO is the first open-source, JSON-native text-to-image model trained exclusively on long structred captions. 
+
+ Fibo sets a new standard for controllability, predictability, and disentanglement. 
+
+ Fibo MLX 4-bit
+
+ This is an 4-bit quantization of FIBO made with mflux .
+
+ Run SOTA on Your Mac
+
+ This quantization brings the state-of-the-art capabilities of FIBO to your local machine. Thanks to the 4-bit quantization and FIBO's efficient architecture, you can now run this powerful 8-billion-parameter model directly on your Mac with excellent performance and reduced memory usage.
+
+ About the Project
+
+ FIBO
+
+ FIBO is an 8B parameter DiT-based, flow-matching text-to-image model designed for enterprise-ready applications. It focuses on:
+
+ Controllability & Predictability : Exceptional prompt adherence using long, structured JSON captions.
+
+ Responsible AI : Trained exclusively on licensed data.
+
+ Architecture : Features SmolLM3-3B as the text encoder and Wan 2.2 as the VAE.
+
+ Mflux
+
+ Mflux is a powerful generation framework built on top of Apple's MLX. It enables efficient inference of diffusion models on Apple Silicon, unlocking the full potential of your Mac's hardware.
+
+ License & Access
+
+ The weights for the original FIBO model are open source for non-commercial use. Please refer to the original model card for access and license details.
+
+ Downloads last month - 
+
+ Inference Providers NEW This model isn't deployed by any Inference Provider. 🙋 Ask for provider support Model tree for briaai/Fibo-mlx-4bit 
+
+ Unable to build the model tree, the base model loops to the model itself. Learn more .
+
+ Collection including briaai/Fibo-mlx-4bit 
+
+ FIBO
+
+ Collection The FIBO model family (Generation & Edit) • 10 items • Updated Jan 20 • 2 Paper for briaai/Fibo-mlx-4bit 
+
+ Generating an Image From 1,000 Words: Enhancing Text-to-Image With
+ Structured Captions
+
+ Paper • 2511.06876 • Published Nov 10, 2025 • 28 System theme Company TOS Privacy About Careers Website Models Datasets Spaces Pricing Docs 
+
+ Inference providers allow you to run inference using different serverless providers.

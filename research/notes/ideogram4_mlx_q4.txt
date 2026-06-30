@@ -1,0 +1,445 @@
+# MLXBits/ideogram-4-mlx-q4 · Hugging Face
+# URL: https://huggingface.co/MLXBits/ideogram-4-mlx-q4
+# Published: 
+
+MLXBits/ideogram-4-mlx-q4 · Hugging Face 
+
+ Hugging Face Models 
+ Datasets 
+ Spaces 
+ Buckets new 
+ Docs 
+ Enterprise 
+ Pricing 
+ Website Tasks 
+ HuggingChat 
+ Collections 
+ Languages 
+ Organizations 
+ 
+ Community Blog 
+ Posts 
+ Daily Papers 
+ Learn 
+ Discord 
+ Forum 
+ GitHub 
+ 
+ Solutions Team & Enterprise 
+ Hugging Face PRO 
+ Enterprise Support 
+ Inference Providers 
+ Inference Endpoints 
+ Storage Buckets 
+
+ Log In 
+ Sign Up 
+ MLXBits / ideogram-4-mlx-q4 like 1 Follow MLX Bits 13 
+
+ Text-to-Image MLX mflux ideogram4 image-generation diffusion flow-matching dit ideogram apple-silicon License: ideogram-4-non-commercial Model card Files Files and versions xet Community Copy to bucket new Use this model Instructions to use MLXBits/ideogram-4-mlx-q4 with libraries, inference providers, notebooks, and local apps. Follow these links to get started.
+
+ Libraries
+ MLX How to use MLXBits/ideogram-4-mlx-q4 with MLX:
+
+ # Download the model from the Hub
+pip install huggingface_hub[hf_xet]
+
+huggingface-cli download --local-dir ideogram-4-mlx-q4 MLXBits/ideogram-4-mlx-q4 
+ Notebooks
+ Google Colab 
+ Kaggle 
+ Local Apps Settings 
+ LM Studio 
+ You need to agree to share your contact information to access this model 
+
+ This repository is publicly accessible, but you have to accept the conditions to access its files and content .
+
+ Log in or Sign Up to review the conditions and access this model content.
+
+ Ideogram 4 — MLX (int4) Requirements 
+ Usage (mflux) 
+ Conversion details 
+ License 
+ Table of Contents 
+ News 
+ Model Zoo 
+ Performance Design Arena 
+ ContraLabs 
+ LMArena 
+ Ideogram internal eval 
+ Open-source benchmarks 
+ 
+ Quick Start Install 
+ Model access 
+ CLI 
+ 
+ Model Summary 
+ Prompting Guide 
+ Documentation 
+ Citation 
+ We're Hiring! 
+
+ Community MLX conversion — not an official Ideogram product. 
+This repository contains weights converted for Apple MLX 
+from the official ideogram-ai/ideogram-4-fp8 
+release. It is not affiliated with, endorsed by, or supported by Ideogram, Inc.
+The original Ideogram 4 Non-Commercial Model Agreement applies
+unchanged — see License below.
+
+ Ideogram 4 — MLX (int4)
+
+ MLX-native weights for running Ideogram 4 on Apple Silicon. Converted from the
+official FP8 checkpoint with mlx-forge , which
+dequantizes the source float8_e4m3fn weights once at conversion time (the FP8 build
+re-dequantizes on every matmul) and, for the quantized build, re-packs them with MLX's
+native mx.quantized_matmul .
+
+ NOTE: Support for use with mflux is pending an open pull request . Once this is merged, mflux will be able to use this model.
+
+ Variant 
+ Precision 
+ Size on disk 
+
+ ideogram-4-mlx (bf16) 
+ bf16 
+ ~49 GB 
+
+ ideogram-4-mlx-q8 (int8) 
+ int8, group size 64 
+ ~27 GB 
+
+ ideogram-4-mlx-q4 (int4) 
+ int4, group size 64 
+ ~15 GB 
+
+ This build: int4 (MLX group quantization, group size 64), ~15 GB. This is the
+smallest and lowest-quality tier — it halves the footprint of the int8 build but
+does not generate faster (image diffusion at these token counts is
+compute-bound, and FLOPs are unchanged by quantization). Prefer int8 unless you
+are memory-constrained.
+
+ Requirements
+
+ An Apple Silicon Mac (M-series).
+
+ 16 GB+ unified memory recommended. Quantized to ~15 GB on disk — the
+smallest Ideogram 4 build. A 16 GB Mac is tight (text encoder + both
+transformers + VAE); 24 GB+ is comfortable.
+
+ mflux with mlx-forge checkpoint support
+(the ideogram-mlx-forge-loader branch / the release that includes it). Stock
+mflux that only reads the FP8 layout will not load these weights.
+
+ Usage (mflux)
+
+ Download the weights, then point mflux-generate-ideogram4 at the local directory.
+mflux auto-detects the precision from split_model.json — you do not pass
+ --quantize for the int4 build.
+
+ # 1. Download this repo 
+hf download MLXBits/ideogram-4-mlx-q4 --local-dir ./ideogram-4-mlx-q4
+
+ # 2. Generate (mflux also accepts the HF repo id directly via --model-path) 
+mflux-generate-ideogram4 \
+ --model-path ./ideogram-4-mlx-q4 \
+ --prompt "a ginger cat wearing a tiny wizard hat reading a spellbook" \
+ --preset V4_QUALITY_48 \
+ --height 1024 --width 1024 \
+ --output out.png
+ 
+ LoRAs work too — add --lora-paths <file> --lora-scales <scale> .
+
+ Conversion details
+
+ Source: ideogram-ai/ideogram-4-fp8 (gated).
+
+ Tool: mlx-forge ideogram-4 recipe.
+
+ Components: conditional_transformer , unconditional_transformer , text_encoder 
+(Qwen3-VL LM; vision tower stripped), and the Flux.2-architecture vae .
+
+ Embeddings are kept at bf16; the VAE is never quantized.
+
+ License
+
+ This conversion is distributed under the original
+ Ideogram 4 Non-Commercial Model Agreement ( license_name: ideogram-4-non-commercial ),
+included verbatim in this repository as LICENSE.md . Non-commercial use only.
+All rights in the underlying model remain with Ideogram, Inc.
+
+ The remainder of this card is reproduced from the upstream
+ ideogram-ai/ideogram-4-fp8 model card.
+
+ Ideogram 4: Open image model at the forefront of design 
+
+ Ideogram 4 is Ideogram 's first open weight text-to-image model . It is a state-of-the-art foundation model trained from scratch — not a fine-tune of any existing model. It introduces a new structured JSON prompting interface, with best-in-class multilingual text rendering, deep language understanding, explicit bounding-box layout and color-palette controls, and native 2k resolution images. The easiest way to try the model is online at ideogram.ai .
+
+ We believe openness drives innovation, and we invite the research community to innovate with us on the forefront of visual intelligence.
+
+ Table of Contents
+
+ News 
+
+ Model Zoo 
+
+ Performance 
+
+ Quick Start 
+
+ Model Summary 
+
+ Prompting Guide 
+
+ Documentation 
+
+ Citation 
+
+ News
+
+ [2026-06-03] Ideogram 4 released! Inference code and weights
+are now public, and our technical blog post is live. See the
+ Quick Start section to generate your first image, or try the
+model online at ideogram.ai .
+
+ Model Zoo
+
+ Model 
+ Params 
+ Weight Quantization 
+ Supported Hardware 
+ Diffusers Support 
+ License 
+
+ Ideogram 4 (nf4) 
+ 9.3B 
+ nf4 
+ CUDA 
+ Yes 
+ Ideogram 4 Non-Commercial 
+
+ Ideogram 4 (fp8) 
+ 9.3B 
+ fp8 
+ All 
+ No 
+ Ideogram 4 Non-Commercial 
+
+ We plan to support more quantizations in the future.
+
+ Performance
+
+ We evaluate Ideogram 4 across third-party arenas and benchmarks, standard
+open-source benchmarks, and our own internal human-preference benchmark. Across
+all of them, Ideogram 4 is the best open-weight image model by far, and sits
+at the frontier of design. 
+
+ Design Arena
+
+ Design Arena is a third-party image Elo
+leaderboard focused specifically on design-oriented generation. On the overall
+board, Ideogram 4 is the top-ranked open-weight model, trailing only proprietary
+GPT and Gemini models:
+
+ Filtered to open-weight models only, Ideogram 4 leads by a commanding margin,
+well ahead of the next-best open model:
+
+ ContraLabs
+
+ ContraLabs ran a blind typography evaluation judged by
+ten professional designers from Contra's top-earning talent. Ideogram 4 leads on
+first-place win rate, picked as the best of four models 47.9% of the time
+overall — well ahead of Gemini 3.1 Flash Image Preview (Nano Banana 2) at 30.0%,
+FLUX.2 [max] (15.5%), and Grok Imagine 1.0 (15.0%):
+
+ It also wins on practical usability: asked "Would you use this in real client
+work?", the same designers rated Ideogram 4 highest at 3.55 / 5 — significantly
+above Nano Banana 2 (2.84), Grok Imagine 1.0 (2.61), and FLUX.2 [max] (2.49):
+
+ LMArena
+
+ On LMArena , a third-party text-to-image leaderboard that
+measures general-purpose text-to-image use cases, Ideogram is the top-ranked
+open-weight lab and a top-5 image generation lab overall — beaten only by giant
+companies with vastly larger budgets and resources:
+
+ Ideogram internal eval
+
+ For our internal human-preference benchmark, focused on graphic design and
+photography, we had graphic designers deeply familiar with professional design
+work do the rating blind. Bradley-Terry scores rank Ideogram 4 #2 overall —
+behind only GPT Image 2 medium — and the top open-weight model:
+
+ Open-source benchmarks
+
+ On standard open-source benchmarks measuring core capabilities — layout control
+(7Bench), spatial reasoning and object fidelity (SpatialGenEval), text rendering
+(X-Omni OCR), and prompt alignment (Prism) — Ideogram 4 closes the gap to the
+leading closed-source models across every axis. On layout control (7Bench), it
+is significantly better than all closed-source models:
+
+ At 9.3B parameters, Ideogram 4 delivers the best text rendering of any open-weight
+release we benchmarked — ahead of much larger models like Qwen-Image (20B),
+FLUX.2 [dev] (32B), and HunyuanImage 3.0 (80B MoE):
+
+ Quick Start
+
+ Install
+
+ The inference code lives in the ideogram4 GitHub repo. Clone it, then from the repo root:
+
+ pip install .
+ 
+ If you plan to modify the code, install in editable mode instead so changes
+under src/ideogram4/ take effect without reinstalling:
+
+ pip install -e .
+
+ Model access
+
+ The model weights are gated on Hugging Face, so you must accept the gate and
+authenticate before the code can download them — otherwise the download fails
+with a 404 / GatedRepoError .
+
+ Open the model page — ideogram-ai/ideogram-4-nf4 
+(or ideogram-ai/ideogram-4-fp8 ) — and click
+ Agree and access repository to accept the license gate.
+
+ Create a Hugging Face access token at
+ huggingface.co/settings/tokens and log in so the
+download is authenticated:
+
+ hf auth login
+ 
+ Alternatively, export the token directly: export HF_TOKEN="hf_..." .
+
+ CLI
+
+ The plain --prompt is rewritten into the structured JSON caption the model
+expects by a "magic prompt" LLM. By default this uses Ideogram's hosted
+magic-prompt API, which is free and does the expansion server-side (no local
+model or system prompt needed). It reads IDEOGRAM_API_KEY — get a key at
+ developer.ideogram.ai :
+
+ python run_inference.py \
+ --prompt "a ginger cat wearing a tiny wizard hat reading a spellbook" \
+ --output out.png \
+ --quantization "nf4" \
+ --magic-prompt-key " $IDEOGRAM_API_KEY " 
+ 
+ You can also run the expansion through your own LLM provider — one of our magic-prompt
+system prompt is open source . See the
+ Prompting Guide for details.
+
+ For the highest-quality images, set --height 2048 --width 2048 and
+ --sampler-preset V4_QUALITY_48 .
+
+ Safety screening with Hive
+
+ Prompt and output safety screening is performed via Hive .
+Sign up and create a Text Moderation key and a Visual Content Moderation key,
+then export them as HIVE_TEXT_MODERATION_KEY and HIVE_VISUAL_MODERATION_KEY 
+(or pass them via --hive-text-key / --hive-visual-key ).
+
+ python run_inference.py \
+ --prompt "an isometric illustration of a tiny city floating in the clouds" \
+ --output out.png \
+ --quantization "nf4" \
+ --magic-prompt-key " $MAGIC_PROMPT_API_KEY " \
+ --hive-text-key " $HIVE_TEXT_MODERATION_KEY " \
+ --hive-visual-key " $HIVE_VISUAL_MODERATION_KEY " 
+ 
+ For sampler presets, parameter reference, and optimization tips, see
+ docs/inference.md .
+
+ Model Summary
+
+ Ideogram 4 is a foundation model trained entirely from scratch , not a
+fine-tune or distillation of any existing checkpoint. It is a flow-matching
+text-to-image model built on a fully single-stream Diffusion Transformer
+(DiT) architecture.
+
+ Architecture: 
+
+ Fully single-stream DiT. Text and image tokens are concatenated into one
+unified sequence and processed through the same 34-layer transformer, with no
+separate text or image branches. This enables deep cross-modal interaction at
+every layer.
+
+ Vision-language model as text encoder. Instead of a text-only encoder
+like CLIP or T5, Ideogram 4 uses
+ Qwen3-VL-8B-Instruct ,
+a full vision-language model that provides far richer understanding of visual
+concepts. Hidden states are extracted from 13 intermediate layers and
+concatenated, giving the model multi-scale semantic features ranging from
+surface-level token information to deep compositional understanding.
+
+ Dual-branch classifier-free guidance. The conditional (positive) and
+unconditional (negative) branches can be independently refined, enabling
+separate control over prompt adherence and image quality.
+
+ Flexible resolution. Native support for any resolution from 256 to 2048
+(multiples of 16), with aspect ratios up to 6:1. A single model handles
+everything from square thumbnails to ultrawide banners, with the noise
+schedule auto-adjusting per resolution.
+
+ Key Capabilities: 
+
+ Extreme controllability. Ideogram 4 is trained on structured JSON
+captions, giving users unprecedented control over composition, style,
+lighting, color palette, typography, and spatial layout, all from a single
+prompt.
+
+ State-of-the-art text rendering. Ideogram 4 delivers best-in-class
+in-image text generation (signage, logos, captions, watermarks, multi-line
+text) with high fidelity directly from the prompt.
+
+ Spatial layout control. Bounding-box coordinates in the prompt allow
+explicit placement of subjects, text elements, and background regions.
+
+ Color palette conditioning. Specify hex colors in the prompt to steer the
+image's dominant color scheme.
+
+ For full architecture details, see
+ docs/model_architecture.md . For a walkthrough of
+how the pipeline components fit together, see
+ docs/pipeline.md .
+
+ Prompting Guide
+
+ Ideogram 4 is trained exclusively on structured JSON captions . While
+plain-text prompts work, you will get the best results by providing a JSON
+object that follows our caption schema.
+
+ Key points:
+
+ Use JSON prompts for maximum controllability — the model was trained on
+them and understands the structure natively.
+
+ Color palette conditioning — specify a colour_palette array of hex
+colors in the style description to steer the image's color scheme.
+
+ Aspect ratio flexibility — Ideogram 4 supports a wide range of aspect
+ratios (any multiple-of-16 resolution from 256 to 2048 on each side). This
+is a key advantage for practical use: portraits, landscapes, banners,
+phone wallpapers, social media formats, etc.
+
+ Bounding-box layout — specify bbox coordinates in the prompt to
+explicitly place subjects, text elements, and background regions.
+
+ Compositional control — use compositional_deconstruction with bounding
+boxes and per-element descriptions for precise spatial layout.
+
+ Why JSON-only training? We train exclusively on JSON so that training
+and inference share a single, common prompt format. The training captions themselves are deliberately
+ extremely descriptive : each JSON exhaustively describes everything in
+the image to maximize training efficiency. The more
+text-to-image relationships each caption pins down, the more grounded
+supervision the model extracts from a single training pair, rather than
+having to infer those relationships across many sparsely-captioned samples.
+
+ Why JSON at inference time? Because the model was trained on captions
+that name every object explicitly, the most reliable way to get every
+requested object rendered is to mirror that pattern. Plain-text prompts still work, but
+won't perform as well since the m
+
+... [truncated] ...

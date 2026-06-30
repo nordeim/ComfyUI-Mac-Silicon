@@ -1,0 +1,259 @@
+# Mac Mini M4 AI Image Generation 2026: ComfyUI vs Draw Things (24GB/48GB Flux 50s Benchmark)
+# URL: https://www.heyuan110.com/posts/ai/2026-02-15-mac-mini-local-image-generation
+# Published: 2026-02-15T00:30:00+08:00
+
+Mac Mini M4 AI Image Generation 2026: ComfyUI vs Draw Things (24GB/48GB Flux 50s Benchmark) Bruce on AI Engineering Posts Tags Tools About 🇺🇸 EN 🇨🇳 中文 Posts 
+ Tags 
+ Tools 
+ About 
+ Feb 15, 2026 Mac Mini M4 AI Image Generation 2026: ComfyUI vs Draw Things (24GB/48GB Flux 50s Benchmark)
+
+ Flux 1024×1024 in 50 seconds on Mac Mini M4 Pro 24GB — full benchmark of ComfyUI, Draw Things, DiffusionBee. Draw Things beats ComfyUI by 20% on Apple Silicon; 48GB unlocks FP16. Setup guide + GGUF quantization picks for 16GB/24GB/48GB.
+
+ Bruce 
+
+ Mac Mini AI Image Generation ComfyUI Draw Things Stable Diffusion Flux 
+
+ AI Guides 
+
+ 3465 Words
+
+ 2026-02-14
+
+ In 2026, local AI image generation on a Mac Mini M4 is not just possible — it’s practical. A 24GB Mac Mini M4 Pro can generate a 1024×1024 image with Flux in about 50 seconds, with zero API costs and all data staying on your machine.
+
+ But which tool should you use? I benchmarked ComfyUI, DiffusionBee, and Draw Things on my Mac Mini M4 Pro, running hundreds of generations and tracking speed, memory usage, and real-world experience. The results: one tool has been abandoned, and another outperforms ComfyUI by over 20% on Apple Silicon.
+
+ This guide covers architecture, performance data, model support, and hands-on experience to help you make the right local AI image generation choice in 2026 — whether you’re a blogger, indie developer, or designer.
+
+ Why Run AI Image Generation Locally on Mac Mini? 
+
+ Before diving into tools, let’s address the fundamental question: why not just use Midjourney or DALL-E? 
+
+ The Case for Local Generation 
+
+ Factor Cloud Services Local Generation Privacy Images uploaded to cloud servers All data stays on your machine Cost Monthly/per-image fees add up One-time hardware cost, unlimited use Speed Depends on queue and network Consistent, no waiting Freedom Platform content restrictions Full control, no censorship Offline Requires internet Works without connectivity Customization Limited to platform models Load custom LoRAs and fine-tuned models Why Apple Silicon Works for This 
+
+ Many people assume AI image generation requires an NVIDIA GPU. Apple Silicon’s Unified Memory Architecture changes that equation.
+
+ On a traditional PC, the GPU has dedicated VRAM separate from system RAM, requiring data transfers between the two. Mac Mini M4’s unified memory means:
+
+ CPU and GPU share the same memory pool — the GPU can directly access all system memory, eliminating the “not enough VRAM” bottleneck.
+
+ Think of it this way: a traditional PC shuttles data between two warehouses, while a Mac has one large warehouse where everyone grabs what they need. A 24GB Mac Mini M4 Pro lets the GPU utilize most of that memory for model loading — critical for memory-hungry models like Flux.
+
+ Combined with Apple’s Metal Performance Shaders (MPS) and Core ML frameworks for native ML acceleration, the Mac Mini M4 is a capable local AI image generation workstation.
+
+ Hardware Configurations and Capabilities 
+
+ Mac Mini Config SD 1.5 SDXL Flux.1 Best For M4 / 16GB Smooth Smooth Requires Q4 quantization, slow Light use, blog images M4 Pro / 24GB Fast Fast Q6_K quantization, moderate speed Daily creation, medium batches M4 Pro / 48GB Very fast Very fast FP16 runs well, fast Professional creation, batch production M4 Max / 64GB+ Very fast Very fast FP16 smooth, supports batching Workstation-grade Key insight : macOS itself uses 1-2GB of unified memory, so a 16GB Mac Mini has roughly 14GB available for AI workloads. If you plan to use Flux models regularly, 24GB is the comfortable starting point .
+
+ Three Tools at a Glance 
+
+ For local AI image generation on Mac, three tools deserve serious comparison:
+
+ Feature ComfyUI DiffusionBee Draw Things Type Node-based workflow engine GUI desktop app Native macOS/iOS app Architecture Python + PyTorch MPS Electron + Python SwiftUI + CoreML/Metal Learning Curve Steep Very easy Moderate Model Support Broadest SD series + Flux SD/SDXL/Flux/Z-Image Extensibility Excellent (custom nodes) Limited Moderate Mac Optimization Basic (MPS backend) Basic Best (Metal FlashAttention) Development Activity Very active Stalled (no updates since Aug 2024) Active Installation Moderate (has desktop version) Drag-and-drop App Store Let’s break each one down.
+
+ ComfyUI: The Most Powerful Generation Engine 
+
+ What It Is 
+
+ ComfyUI is an open-source, node-based image generation workflow engine. If other tools are point-and-shoot cameras, ComfyUI is a full-manual DSLR — you control every step of the generation pipeline.
+
+ Its interface is a visual node editor : each node represents an operation (load model, set prompt, sample, decode, etc.), connected by wires that pass data between them. Instead of typing a prompt and waiting, you build an entire processing pipeline from model loading to final output.
+
+ Installation on macOS 
+
+ ComfyUI offers a macOS desktop version (currently Beta) with a simplified setup:
+
+ Download the DMG installer (or run brew install comfyui )
+ Select MPS (Metal Performance Shaders) as the GPU backend on launch
+ Choose an installation path; it auto-configures Python and dependencies
+ Enter the node editor once setup completes
+ Note : The ComfyUI desktop version only supports Apple Silicon — Intel Macs are not compatible. Requires at least 5GB of free disk space.
+
+ Key Strengths 
+
+ Broadest Model Support 
+
+ ComfyUI supports virtually every mainstream image generation model: SD 1.5, SD 2.x, SDXL, Flux.1 (Dev/Schnell), Z-Image-Turbo, Kolors, and more. The ComfyUI-GGUF plugin adds support for GGUF quantized models — essential for memory-constrained Macs.
+
+ GGUF quantization is the lifeline for Mac users. Taking Flux.1 Dev as an example:
+
+ Quantization Level File Size Quality Speed Recommended Config FP16 (original) ~24GB Best Slow 48GB+ RAM Q8 ~13GB Near-lossless Slower 32GB+ RAM Q6_K ~10GB Best balance Moderate 24GB RAM Q4_KS ~7GB Some degradation Faster 16GB RAM Q2_K ~4GB Noticeable loss Fastest 16GB RAM (emergency) From testing : Q6_K is the sweet spot for most Mac users. Quality loss is virtually imperceptible, while memory usage drops significantly. For 16GB machines, Q4_KS paired with a quantized T5 text encoder is the optimal combination.
+
+ Rich Node Ecosystem 
+
+ ComfyUI’s killer feature is its custom node ecosystem. The community has built thousands of nodes covering:
+
+ ControlNet : Precise control over composition, poses, edges
+ IP-Adapter : Style control using reference images
+ TeaCache : 30-50% generation speedup (ideal for drafts)
+ AnimateDiff : Animation generation
+ Upscale : Super-resolution upscaling
+ Performance Benchmarks (Mac) 
+
+ On an M4 Pro with 24GB, with MPS backend properly configured:
+
+ Flux.1 Dev Q6_K (1024×1024, 20 steps): ~ 50-90 seconds/image 
+ SDXL (1024×1024, 25 steps): ~ 20-40 seconds/image 
+ SD 1.5 (512×512, 20 steps): ~ 5-10 seconds/image 
+ Z-Image-Turbo (1024×1024, 9 steps): ~ 60-80 seconds/image 
+ Troubleshooting tip : If Flux generation is extremely slow (e.g., 1 hour per image), PyTorch is likely not using the GPU. This is a known issue — usually caused by installing the CPU-only PyTorch build. Make sure you have the MPS-enabled PyTorch nightly version installed.
+
+ Drawbacks 
+
+ Steep learning curve : Node-based workflows are not beginner-friendly; requires understanding the Stable Diffusion pipeline
+ Non-native Mac optimization : Runs through PyTorch MPS backend, less efficient than native CoreML/Metal implementations
+ Heavy resource usage : Python environment + model files easily consume 20GB+ of disk space
+ Beta status : macOS desktop version is still unstable with occasional crashes
+ DiffusionBee: The Simplest Entry Point 
+
+ What It Is 
+
+ DiffusionBee is an AI image generation app designed specifically for Mac, aiming to make Stable Diffusion as easy as any regular Mac app . Built with Electron, it provides a complete GUI — no command line required.
+
+ Installation and Usage 
+
+ The installation process is the simplest of all three tools:
+
+ Download the DMG from GitHub Releases 
+ Drag to Applications folder
+ Default model downloads automatically on first launch
+ Type a prompt, click generate
+ No Python, no terminal, no technical knowledge required.
+
+ Feature Overview 
+
+ DiffusionBee 2.5.3 supports:
+
+ Text to Image 
+ Image to Image 
+ Inpainting 
+ Outpainting 
+ Upscaling 
+ Custom model loading : SD 1.x, SD 2.x, SDXL
+ LoRA support : Multiple LoRAs simultaneously
+ Flux.1 support (ARM64 / macOS 13+ only)
+ The Critical Problem: Development Has Stopped 
+
+ Here’s the key fact you need to know:
+
+ DiffusionBee’s last update was August 14, 2024 (v2.5.3). As of February 2026, it has gone over 1.5 years without a new release. 
+
+ In a field that moves as fast as AI image generation, 1.5 years of stagnation means:
+
+ Incomplete Flux.1 support : Users report Flux features not working 
+ No GGUF quantized model support : Unfriendly to memory-constrained Macs
+ Missing newer models : Z-Image-Turbo, SD3.5, FLUX.2 are unavailable
+ Unfixed bugs : Known issues remain unresolved
+ No in-app updates : Users must manually download new versions
+ It’s like buying a car whose manufacturer has stopped all service and maintenance. It still runs for now, but the risk grows over time.
+
+ Performance Reference 
+
+ On M4 Pro 24GB:
+
+ Flux Dev (704×704, 25 steps): ~ 6 minutes/image 
+ SDXL (1024×1024, 25 steps): ~ 1-2 minutes/image 
+ SD 1.5 (512×512, 20 steps): ~ 15-30 seconds/image 
+ Middling performance overall. Without GGUF support or modern optimization techniques, Flux performance lags significantly behind the other tools.
+
+ Who Should Use It? 
+
+ DiffusionBee remains viable only if you meet all of these conditions:
+
+ You only need basic SD 1.5 / SDXL functionality
+ You don’t need Flux or newer models
+ Performance isn’t a priority
+ You want zero-configuration setup
+ Honestly, given the stalled development, I don’t recommend DiffusionBee for new users as a primary tool .
+
+ Draw Things: The Underrated Apple-Native Choice 
+
+ What It Is 
+
+ Draw Things is an AI image generation app built specifically for the Apple ecosystem, supporting iPhone, iPad, and Mac. It’s not a Python wrapper — it uses SwiftUI + a custom inference engine (s4nnc) deeply optimized for Apple Silicon from the ground up.
+
+ If ComfyUI is a “custom race car” and DiffusionBee is an “automatic family sedan,” Draw Things is the “factory performance edition” — maintaining ease of use while delivering hardware-optimized performance.
+
+ Deep Dive into the Architecture 
+
+ Draw Things’ performance edge comes from two core technologies:
+
+ Metal FlashAttention 
+
+ This is Draw Things’ proprietary technology. Standard attention computation generates a full attention matrix (very memory-intensive), while FlashAttention computes row by row , dramatically reducing memory usage while improving speed.
+
+ Draw Things’ Metal FlashAttention implementation includes:
+
+ Overlapped execution of computation and memory loading via simdgroup_async_copy API
+ Automatic detection of attention matrix sparsity, skipping unnecessary calculations
+ On M1 Pro and above, 20-40% faster than standard CoreML GPU implementation
+ Benchmark data:
+
+ Chip Standard MPS Metal FlashAttention Speedup M1 ~15.2s ~12.8s ~19% M1 Pro/M2 Pro Baseline 20-40% faster Significant M3/M4 Baseline 20%+ faster Notable CoreML Integration 
+
+ Draw Things supports both CoreML (leveraging Apple’s Neural Engine/ANE) and Metal (direct GPU compute). In some scenarios, the CoreML path can utilize the ANE for acceleration, freeing GPU resources:
+
+ M1/M2 base models : CoreML + ANE path may be faster
+ M1 Pro and above : Metal FlashAttention typically wins
+ The app automatically selects the optimal path based on your hardware — no manual configuration needed.
+
+ Feature Highlights 
+
+ Comprehensive model support : SD 1.5, SDXL, Flux.1, Z-Image, Qwen Image, FLUX.2, even Hunyuan video generation
+ Full ControlNet suite : Canny, Depth, Pose, Scribble, and more
+ Local LoRA training : Train LoRAs directly on your Mac without cloud services
+ Image-to-image and inpainting : Complete editing capabilities
+ Simple model management : Select a model and it downloads automatically
+ Optimize for Faster Loading : One-click model loading optimization
+ Cross-device sync : Parameters tuned on Mac sync to iPhone/iPad
+ Performance 
+
+ Draw Things performance across Apple Silicon devices:
+
+ Device / RAM SD 1.5 (512×512) SDXL (1024×1024) Flux.1 8GB (M1 Air) Smooth (~15s) Usable (needs quantization) Slow but works (needs quantization) 16GB (M2 Pro) Fast Good Requires 8-bit quantization 24GB (M3/M4 Pro) Very fast Fast Runs smoothly 36GB+ (M4 Max) Very fast Very fast Best experience Thanks to Metal FlashAttention, Draw Things on identical hardware typically runs 20% or more faster than ComfyUI (PyTorch MPS backend).
+
+ Why It’s Underrated 
+
+ Draw Things has far less name recognition than ComfyUI or Stable Diffusion WebUI, but it has several unique advantages:
+
+ Genuine Apple-native optimization : Not a Python wrapper — optimized from the ground up for Metal/CoreML
+ Apple endorsement : Apple featured Draw Things alongside Final Cut Pro and DaVinci Resolve during the M5 iPad Pro launch
+ Active engineering blog : The team shares technical details at engineering.drawthings.ai 
+ App Store distribution : One-click install, automatic updates, no Python environment headaches
+ Minimal memory footprint : Using the ANE path, the app itself consumes only ~150MB of RAM
+ Head-to-Head Comparison: Same Machine, Same Task 
+
+ For a concrete comparison, consider a real-world scenario : generating a 1024×1024 tech-style cover image for a blog post.
+
+ Workflow Comparison 
+
+ ComfyUI workflow :
+
+ Open browser → Load/connect nodes → Configure KSampler parameters
+ → Set CLIP text encoding → Connect VAE decoder → Click Queue Prompt
+ → Wait for generation → Manually save image
+ Copy Steps: ~ 8-10 (reducible to 3-4 with saved workflow templates)
+
+ DiffusionBee workflow :
+
+ Open app → Enter prompt → Select model → Adjust parameters → Click generate → Save
+ Copy Steps: ~ 4-5 
+
+ Draw Things workflow :
+
+ Open app → Select model → Enter prompt → Adjust parameters (optional) → Click generate → Save
+ Copy Steps: ~ 4-5 
+
+ End-to-End Experience 
+
+ Stage ComfyUI DiffusionBee Draw Things First install 10-20 minutes 5 minutes 2 minutes (App Store) Model download Manual download to specific directory In-app selection One-click in-app download Learning cost High (must understand nodes) Low Medium (feature-rich but clear UI) Prompt input Node-based Text field Text field Batch generation Queue system, efficient One at a time Supports batching Iteration Modify node parameters, re-run Adjust parameters, re-run Tweak and re-run directly Style consistency Through workflow templates Limited Through presets Decision Tree: Which Tool Should You Choose? 
+
+ If you want a quick answer without reading all the analysis above:
+
+ Do you need to build complex image generation pipelines?
+ ├── Yes → ComfyUI (maximum flexibility, requires learning i
+
+... [truncated] ...

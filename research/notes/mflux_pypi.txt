@@ -1,0 +1,452 @@
+# mflux
+# URL: https://pypi.org/project/mflux/0.14.0
+# Published: 
+
+mflux · PyPI 
+
+ Skip to main content 
+ Switch to mobile version 
+
+ Warning 
+ 
+ You are using an unsupported browser, upgrade to a newer version. 
+
+ Warning 
+ 
+ Some features may not work without JavaScript. Please try enabling it if you encounter problems. 
+
+ Search PyPI 
+
+ Search 
+
+ Help 
+
+ Docs 
+
+ Sponsors 
+
+ Log in 
+
+ Register 
+
+Menu 
+
+ Help 
+
+ Docs 
+
+ Sponsors 
+
+ Log in 
+
+ Register 
+
+ Search PyPI 
+
+ Search 
+
+ mflux 0.14.0
+
+ pip install mflux==0.14.0 
+
+ Copy PIP instructions 
+
+ Newer version available (0.18.0) 
+
+Released: 
+ Dec 31, 2025
+
+ A MLX port of FLUX based on the Huggingface Diffusers implementation.
+
+ Navigation
+
+Project description 
+
+Release history 
+
+Download files 
+
+Verified details 
+
+ These details have been verified by PyPI 
+ Maintainers
+
+ filipstrand 
+
+ Unverified details
+
+ These details have not been verified by PyPI 
+ Project links
+
+ homepage 
+
+ Meta
+
+ License: MIT License
+
+ Author: Filip Strand 
+
+ Maintainer: Filip Strand 
+
+ Tags 
+ 
+ diffusers
+, 
+ 
+ flux
+, 
+ 
+ mlx
+
+ Requires: Python >=3.10
+
+ Provides-Extra: 
+ dev 
+
+ Classifiers
+
+ Intended Audience 
+
+ Developers
+
+ Operating System 
+
+ MacOS
+
+ Programming Language 
+
+ Python :: 3
+
+ Python :: 3.10
+
+ Python :: 3.11
+
+ Python :: 3.12
+
+ Python :: 3.13
+
+ Report project as malware 
+
+Project description 
+
+Project details 
+
+Release history 
+
+Download files 
+
+ Project description
+
+ A MLX port of FLUX based on the Huggingface Diffusers implementation. 
+
+ About
+
+ Run the powerful FLUX , Qwen Image , FIBO , and Z-Image models locally on your Mac!
+
+ Table of contents
+
+ Philosophy 
+
+ 💿 Installation 
+
+ 🖼️ Generating an image 
+ 
+ 📜 Full list of Command-Line Arguments 
+
+ ⏱️ Image generation speed (updated) 
+
+ ↔️ Equivalent to Diffusers implementation 
+
+ 🗜️ Quantization 
+
+ 💽 Running a model directly from disk 
+
+ 🌐 Third-Party HuggingFace Model Support 
+
+ 🎨 Image-to-Image 
+
+ 🦙 Qwen Models 
+ 
+ 🖼️ Qwen Image 
+
+ ✏️ Qwen Image Edit 
+
+ 🌀 FIBO 
+
+ ⚡ Z-Image 
+
+ 🔌 LoRA 
+
+ 🎭 In-Context Generation 
+ 
+ 📸 Kontext 
+
+ 🎨 In-Context LoRA 
+
+ 👕 CatVTON (Virtual Try-On) 
+
+ ✏️ IC-Edit (In-Context Editing) 
+
+ 🛠️ Flux Tools 
+ 
+ 🖌️ Fill 
+
+ 🔍 Depth 
+
+ 🔄 Redux 
+
+ 🕹️ Controlnet 
+
+ 🔎 Upscale 
+ 
+ 🏎️ SeedVR2 
+
+ 🎨 ControlNet Upscale 
+
+ 🎛️ Dreambooth fine-tuning 
+
+ 🧠 Concept Attention 
+
+ 🚧 Current limitations 
+
+ 💡Workflow tips 
+
+ 🌱‍ Related projects 
+
+ 🙏 Acknowledgements 
+
+ ⚖️ License 
+
+ Philosophy
+
+ MFLUX is a line-by-line port of the FLUX, Qwen, Bria and Z-Image models implementations in the Huggingface Diffusers and Huggingface Transformers libraries to Apple MLX .
+MFLUX is purposefully kept minimal and explicit - Network architectures are hardcoded and no config files are used
+except for the tokenizers. The aim is to have a tiny codebase with the single purpose of expressing these models
+(thereby avoiding too many abstractions). While MFLUX priorities readability over generality and performance, it can still be quite fast , and even faster quantized .
+
+ All models are implemented from scratch in MLX and only the tokenizers are used via the Huggingface Transformers library. Other than that, there are only minimal dependencies like Numpy and Pillow for simple image post-processing.
+
+ 💿 Installation
+
+ For users, the easiest way to install MFLUX is to use uv tool : If you have installed uv , simply:
+
+ uv tool install --upgrade mflux --prerelease = allow
+ 
+ to get the mflux-generate and related command line executables. You can skip to the usage guides below.
+
+ For the classic way to create a user virtual environment: 
+ mkdir -p mflux && cd mflux && python3 -m venv .venv && source .venv/bin/activate
+ 
+ This creates and activates a virtual environment in the mflux folder. After that, install MFLUX via pip:
+
+ pip install -U mflux
+
+ For contributors (click to expand) 
+ 
+ Clone the repo:
+
+ git clone git@github.com:filipstrand/mflux.git
+
+ Install the application
+
+ make install
+
+ To run the test suite
+
+ make test 
+
+ Follow format and lint checks prior to submitting Pull Requests. The recommended make lint and make format installs and uses ruff . You can setup your editor/IDE to lint/format automatically, or use our provided make helpers:
+
+ make format - formats your code
+
+ make lint - shows your lint errors and warnings, but does not auto fix
+
+ make check - via pre-commit hooks, formats your code and attempts to auto fix lint errors
+
+ consult official ruff documentation on advanced usages
+
+ If you have trouble installing MFLUX, please see the installation related issues section . 
+
+ ⌨️ Shell Completions (Optional) 
+ MFLUX supports ZSH (default on macOS) shell completions for all CLI commands. This provides tab completion for all command-line arguments and options.
+
+ To enable completions:
+
+ # Install completions 
+mflux-completions
+
+ # Reload your shell 
+ exec zsh
+
+ # Now try tab completion! 
+mflux-generate --<TAB>
+ 
+ If you encounter issues (ZSH completion setup can vary by system), check your installation:
+
+ mflux-completions --check
+ 
+ For more details and troubleshooting, see the completions documentation .
+
+ 🖼️ Generating an image
+
+ Run the command mflux-generate by specifying a prompt and the model and some optional arguments. For example, here we use a quantized version of the schnell model for 2 steps:
+
+ mflux-generate --model schnell --prompt "Luxury food photograph" --steps 2 --seed 2 -q 8 
+ 
+ This example uses the more powerful dev model with 25 time steps:
+
+ mflux-generate --model dev --prompt "Luxury food photograph" --steps 25 --seed 2 -q 8 
+ 
+ This example uses the qwen model with 20 time steps:
+
+ mflux-generate-qwen --prompt "Luxury food photograph" --steps 20 --seed 2 -q 6 
+ 
+ You can also pipe prompts from other commands using stdin:
+
+ echo "A majestic mountain landscape" | mflux-generate --prompt - --model schnell --steps 2 
+ 
+ This is useful for integrating MFLUX into shell scripts or dynamically generating prompts using LLM inference tools such as llm , mlx-lm , ollama , etc.
+
+ Alternatively, you can use MFLUX directly in Python:
+
+ from mflux.models.flux.variants.txt2img.flux import Flux1 
+
+ # Load the model 
+ flux = Flux1 . from_name ( 
+ model_name = "schnell" , # "schnell", "dev", or "krea-dev" 
+ quantize = 8 , # 3, 4, 5, 6, or 8 
+ ) 
+
+ # Generate an image 
+ image = flux . generate_image ( 
+ seed = 2 , 
+ prompt = "Luxury food photograph" , 
+ num_inference_steps = 2 , # "schnell" works well with 2-4 steps, "dev" and "krea-dev" work well with 20-25 steps 
+ height = 1024 , 
+ width = 1024 , 
+ ) 
+
+ image . save ( path = "image.png" ) 
+ 
+ For more advanced Python usage and additional configuration options, you can explore the entry point files in the source code, such as flux_generate.py , flux_generate_controlnet.py , flux_generate_fill.py , and others in the src/mflux/models/flux/cli/ directory. These files demonstrate how to use the Python API for various features and provide examples of advanced configurations.
+
+ ⚠️ If the specific model is not already downloaded on your machine, it will start the download process and fetch the model weights (~34GB for Schnell/Dev models, ~58GB for Qwen). See the quantization section for running compressed versions of the model. ⚠️
+
+ By default, mflux caches files in ~/Library/Caches/mflux/ . The Hugging Face model files themselves are cached separately in the Hugging Face cache directory (e.g., ~/.cache/huggingface/ ). 
+
+ To change the mflux cache location, set the MFLUX_CACHE_DIR environment variable. To change the Hugging Face cache location, you can modify the HF_HOME environment variable (e.g. to HF_HOME=/Volumes/T7/.cache/huggingface ). For more details on Hugging Face cache settings, please refer to the Hugging Face documentation .
+
+ 🔒 FLUX.1-dev currently requires granted access to its Huggingface repo. For troubleshooting, see the issue tracker 🔒
+
+ 🎨 FLUX.1 Krea [dev]: Enhanced Photorealism
+
+ MFLUX now supports FLUX.1 Krea [dev] , an 'opinionated' text-to-image model developed in collaboration with Krea AI . This model overcomes the oversaturated 'AI look' commonly found in generated images, achieving exceptional photorealism with distinctive aesthetics.
+This model can be used where the dev model is used, and it is available as krea-dev in MFLUX (also supports the alias dev-krea ), this includes dreambooth fine-tuning.
+
+ mflux-generate \ 
+ --model krea-dev \ 
+ --prompt "A photo of a dog" \ 
+ --steps 25 \ 
+ --seed 2674888 \ 
+ -q 8 \ 
+ --height 1024 \ 
+ --width 1024 
+ 
+ Learn more about FLUX.1 Krea [dev] in the official announcement . 
+
+ 📜 Full list of Command-Line Arguments
+
+ 📜 Command-Line Arguments Reference 
+ General Command-Line Arguments
+
+ Click to expand General arguments 
+
+ --prompt (required, str ): Text description of the image to generate. Use - to read the prompt from stdin (e.g., echo "A beautiful sunset" | mflux-generate --prompt - ).
+
+ --prompt-file (optional, Path ): Path to a file containing the prompt text. The file is re-read before each generation, allowing you to edit the prompt between iterations when using multiple seeds without restarting the program.
+
+ --negative-prompt (optional, str , default: "" ): The negative prompt to guide what the model should not generate.
+
+ --scheduler (optional, str , default: "linear" ): Choose from implemented schedulers (e.g., "linear" ) or provide an external import path.
+
+ --model or -m (required, str ): Model to use for generation. Accepts:
+
+ Predefined names: "schnell" , "dev" , "krea-dev" , "dev-krea" , "qwen" , "fibo" , "z-image-turbo" 
+
+ HuggingFace repos: "Freepik/flux.1-lite-8B-alpha" , "briaai/Fibo-mlx-4bit" 
+
+ Local paths: "/Users/me/models/my-model" , "~/my-model" 
+
+ --base-model (optional, str , default: None ): Specifies which base architecture a third-party model is derived from ( "schnell" , "dev" , or "krea-dev" ). Required when using third-party models from HuggingFace or local paths.
+
+ --output (optional, str , default: "image.png" ): Output image filename. If --seed or --auto-seeds establishes multiple seed values, the output filename will automatically be modified to include the seed value (e.g., image_seed_42.png ).
+
+ --seed (optional, repeatable int args, default: None ): 1 or more seeds for random number generation. e.g. --seed 42 or --seed 123 456 789 . When multiple seeds are provided, MFLUX will generate one image per seed, using the same prompt and settings. Default is a single time-based value.
+
+ --auto-seeds (optional, int , default: None ): Auto generate N random Seeds in a series of image generations. For example, --auto-seeds 5 will generate 5 different images with 5 different random seeds. This is superseded by explicit --seed arguments and seed values in --config-from-metadata files.
+
+ --height (optional, int , default: 1024 ): Height of the output image in pixels.
+
+ --width (optional, int , default: 1024 ): Width of the output image in pixels.
+
+ --steps (optional, int , default: 4 ): Number of inference steps.
+
+ --guidance (optional, float , default: 3.5 ): Guidance scale (used for models that support it, such as "dev" , "krea-dev" , "fibo" , and others). Default varies by tool.
+
+ --path (optional, str , default: None ): [DEPRECATED: use --model instead] Path to a local model on disk.
+
+ --quantize or -q (optional, int , default: None ): Quantization (choose between 3 , 4 , 5 , 6 , or 8 bits).
+
+ --lora-paths (optional, [str] , default: None ): The paths to the LoRA weights. Supports multiple formats:
+
+ Local files: /path/to/lora.safetensors 
+
+ HuggingFace repos: author/model (auto-downloads)
+
+ HuggingFace collections: repo_id:filename.safetensors (downloads specific file)
+
+ Registry names: my-lora (via LORA_LIBRARY_PATH )
+
+ --lora-scales (optional, [float] , default: None ): The scale for each respective LoRA (will default to 1.0 if not specified and only one LoRA weight is loaded.)
+
+ --metadata (optional): Exports a .json file containing the metadata for the image with the same name. (Even without this flag, the image metadata is saved and can be viewed using mflux-info image.png or exiftool image.png )
+
+ --image-path (optional, str , default: None ): Local path to the initial image for image-to-image generation.
+
+ --image-strength (optional, float , default: 0.4 ): Controls how strongly the initial image influences the output image. A value of 0.0 means no influence. (Default is 0.4 )
+
+ --config-from-metadata or -C (optional, str ): [EXPERIMENTAL] Path to a prior file saved via --metadata , or a compatible handcrafted config file adhering to the expected args schema.
+
+ --low-ram (optional): Reduces GPU memory usage by limiting the MLX cache size and releasing text encoders and transformer components after use (single image generation only). While this may slightly decrease performance, it helps prevent system memory swapping to disk, allowing image generation on systems with limited RAM.
+
+ --battery-percentage-stop-limit or -B (optional, int , default: 5 ): On Mac laptops powered by battery, automatically stops image generation when battery percentage reaches this threshold. Prevents your Mac from shutting down and becoming unresponsive during long generation sessions.
+
+ --stepwise-image-output-dir (optional, str , default: None ): [EXPERIMENTAL] Output directory to write step-wise images and their final composite image to. This feature may change in future versions. When specified, MFLUX will save an image for each denoising step, allowing you to visualize the generation process from noise to final image.
+
+ Kontext Command-Line Arguments
+
+ Click to expand Kontext arguments 
+ The mflux-generate-kontext command supports most of the same arguments as mflux-generate , with these specific parameters:
+
+ --image-path (required, str ): Path to the reference image that will be used as the base for editing. This image provides the visual context for the text-guided modifications.
+
+ --guidance (optional, float , default: 2.5 ): Guidance scale for the generation. Kontext typically works well with values between 2.0-4.0, with lower values allowing more creative freedom and higher values adhering more closely to the prompt.
+
+ Note : The Kontext tool automatically uses the appropriate model ( dev-kontext ), so you don't need to specify --model .
+
+ See the Kontext section for more details on this feature and comprehensive prompting strategies.
+
+ In-Context LoRA Command-Line Arguments
+
+ Click to expand In-Context LoRA arguments 
+ The mflux-generate-in-context command supports most of the same arguments as mflux-generate , with these additional parameters:
+
+ --image-path (required, str ): Path to the reference image that will guide the style of the generated image.
+
+ --lora-style (optional, str , default: None ): The style to use for In-Context LoRA generation. Choose from: couple , storyboard , font , home , illustration , portrait , ppt , sandstorm , sparklers , or identity .
+
+ --save-full-image (optional, flag): Additionally save the full side-by-side image containing both the reference and the result.
+
+ See the In-Context Generation section for more details on how 
+
+... [truncated] ...
