@@ -1,5 +1,7 @@
 # Transparent Proxy — MLX Image Generation Research Workspace
 
+> The definitive blueprint for running state-of-the-art, MLX-optimized generative image models locally on Apple Silicon — from bare-metal install to production workloads, with every pitfall documented and every command copy-paste ready.
+
 **Workspace date:** 2026-06-30
 **Platform:** Apple Silicon Mac (M1/M2/M3/M4/M5), macOS Tahoe 26.x (26.2+ for M5 Neural Accelerator)
 
@@ -11,7 +13,8 @@ This workspace is a self-contained research and delivery package for running sta
 
 | Path | What it is | When to open it |
 |---|---|---|
-| `comfyui-set-mac-SKILL.md` | **The main install & config guide (v1.5)** — 2,917 lines covering 7 runtime methods, 9 model families, 20 pitfalls, production deployment patterns, and license audit | Start here for setup |
+| `MLX-Image-Gen-Mac-Implementation-Guide.md` | **Condensed implementation guide (21 KB)** — distilled for an agent: install, downloads, CLI/API/ComfyUI commands, benchmark expected numbers, 20-pitfall table, per-model settings, verification checklist | **Start here for setup/testing continuation** |
+| `comfyui-set-mac-SKILL.md` | **The main install & config guide (v1.5)** — 2,917 lines covering 7 runtime methods, 9 model families, 20 pitfalls, production deployment patterns, and license audit | Definitive step-by-step reference |
 | `mlx-image-gen-mac-2026.md` | **Deep technical research report** — 11,570 words, 56 web searches, 49 cited sources, architecture deep-dives, quantization theory, kernel-level benchmarks | When you need the "why" behind recommendations |
 | `MLX-Optimized_Z-Image_Turbo_and_FLUX_Workflows.md` | **Mac mini M4 Pro 128GB targeted report** — concrete mflux CLI commands and ComfyUI workflow schemas tuned for high-RAM Macs | If you have an M4 Pro Max / 128GB Mac |
 | `research_mac_image_models.md` | **Original research plan & phased methodology** — 10-phase deep research blueprint for mapping the MLX ecosystem (predecessor to the final report) | For understanding the research methodology |
@@ -51,6 +54,20 @@ This workspace is a self-contained research and delivery package for running sta
 
 ### `MLX-Optimized_Z-Image_Turbo_and_FLUX_Workflows.md` (22 KB, most current)
 **Mac mini M4 Pro 128GB targeted report** — specific recommendations for high-RAM Mac setups. Includes concrete mflux CLI commands and ComfyUI workflow JSON schemas for Z-Image Turbo and FLUX.2 Klein 4B, plus template structures for `image_zimage_m4pro.json` and `image_flux_m4pro.json`.
+
+### `MLX-Image-Gen-Mac-Implementation-Guide.md` (21 KB, most current)
+**Condensed implementation guide for the next agent** — distilled from the 210 KB+ research corpus (`research_mac_image_models.md` + `mlx-image-gen-mac-2026.md`):
+- **§1–§2 Ecosystem state:** critical changes, model matrix, hardware tiers
+- **§3–§4 Setup:** mflux + ComfyUI + Mflux-ComfyUI bridge + all model download commands
+- **§5 Running:** CLI / Python API / ComfyUI / FastAPI with copy-paste code
+- **§7 Benchmarking:** expected performance per model/hardware
+- **§8 Per-model settings:** Z-Image, FLUX.2, Krea 2, Ideogram 4
+- **§9 Pitfalls:** all 20 known issues in scannable table form
+- **§10 Production:** decision matrix + explicit "never use" list
+- **§13 Verification:** 13-item checklist to confirm install
+- **§14 File reference:** quick map to SKILL.md / research report / scripts / notes
+
+Purpose: every line is actionable — no duplicate JSON skeletons, no verbose methodology, no agent-specific narrative. Exactly what's needed to continue setup, troubleshooting, and testing.
 
 ### `comfyui-set-mac-SKILL-new.md` (113 KB)
 Near-final draft of the v1.5 SKILL.md. Content is essentially identical to `comfyui-set-mac-SKILL.md` (the most current version should be considered authoritative).
