@@ -23,6 +23,7 @@ This workspace is a self-contained research and delivery package for running sta
 | `zai_session_1.md` | **Complete Z.ai research session transcript** — full record of the 56-search, 14-deep-read research execution that produced the v1.5 deliverables | For audit trail / understanding research provenance |
 | `scripts/` | **Working research scripts** — web search orchestrators, deep reader, companion script generator | For re-running or extending the research |
 | `research/notes/` | **14 clean-text primary source extracts** — MLX M5 benchmarks, FLUX.2, DiffusionKit, mflux, Draw Things, etc. | For verifying cited sources |
+| `skills/comfyui-workflow-scaffold/SKILL.md` | **ComfyUI Workflow Scaffold skill** — agent-readable guide for creating valid ComfyUI workflow JSON templates for Apple Silicon image generation, with model-specific node catalogs and Mac validation checklists | For scaffolding new workflows or validating existing ones |
 
 ---
 
@@ -197,7 +198,7 @@ ls research/notes/
 
 Created: skills/comfyui-workflow-scaffold/SKILL.md
  
-Location: /home/pete/.pi/agent/skills/comfyui-workflow-scaffold/ 
+Location: `skills/comfyui-workflow-scaffold/` 
  
 ### Structure 
  
@@ -220,19 +221,13 @@ This skill enables the agent to create valid ComfyUI workflow JSON templates for
  
 ### Key Capabilities 
  
-┌──────────────────────────┬───────────────────────────────────────────────────────────────────────────┐ 
-│ Feature                  │ Detail                                                                    │ 
-├──────────────────────────┼───────────────────────────────────────────────────────────────────────────┤ 
-│ Two output formats       │ Saved Graph (native) + Prompt API (agent-friendly)                        │ 
-├──────────────────────────┼───────────────────────────────────────────────────────────────────────────┤ 
-│ Model-specific templates │ Z-Image Turbo, FLUX.1/2, Krea 2, Ideogram 4, Qwen-Image, FIBO             │ 
-├──────────────────────────┼───────────────────────────────────────────────────────────────────────────┤ 
-│ Backend selection        │ PyTorch MPS (11-node) vs Mflux-ComfyUI MLX (3-node)                       │ 
-├──────────────────────────┼───────────────────────────────────────────────────────────────────────────┤ 
-│ Mac validation checklist │ fp8 detection, memory fit, LoRA architecture match, Krea cfg=0            │ 
-├──────────────────────────┼───────────────────────────────────────────────────────────────────────────┤ 
-│ Reference files          │ Full JSON schema, node catalog with slot indices, link patterns per model │ 
-└──────────────────────────┴───────────────────────────────────────────────────────────────────────────┘ 
+| Feature | Detail | 
+|---|---| 
+| Two output formats | Saved Graph (native) + Prompt API (agent-friendly) | 
+| Model-specific templates | Z-Image Turbo, FLUX.1/2, Krea 2, Ideogram 4, Qwen-Image, FIBO | 
+| Backend selection | PyTorch MPS (11-node) vs Mflux-ComfyUI MLX (3-node) | 
+| Mac validation checklist | fp8 detection, memory fit, LoRA architecture match, Krea cfg=0 | 
+| Reference files | Full JSON schema, node catalog with slot indices, link patterns per model | 
  
 ### Trigger Phrases 
  
