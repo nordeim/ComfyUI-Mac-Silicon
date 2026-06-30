@@ -195,6 +195,51 @@ ls research/notes/
 
 ---
 
+Created: skills/comfyui-workflow-scaffold/SKILL.md
+ 
+Location: /home/pete/.pi/agent/skills/comfyui-workflow-scaffold/ 
+ 
+### Structure 
+ 
+``` 
+  comfyui-workflow-scaffold/ 
+  ├── SKILL.md                          (333 lines) 
+  └── references/ 
+      ├── workflow-schema.md            (155 lines) 
+      ├── node-catalog.md               (168 lines) 
+      └── link-patterns.md              (129 lines) 
+``` 
+ 
+### What This Skill Does 
+ 
+This skill enables the agent to create valid ComfyUI workflow JSON templates for Apple Silicon image generation. It synthesizes patterns from: 
+ 
+1. 6 sample workflows in sample_workflows_as_examples/ — structural patterns (groups, MarkdownNote docs, node/link schema) 
+2. MLX-Image-Gen-Mac-Implementation-Guide.md — Mac-specific constraints (no fp8, Krea 2 cfg=0, hardware limits) 
+3. comfyui-set-mac-SKILL.md — canonical 11-node PyTorch MPS scaffold and 3-node Mflux-ComfyUI scaffold 
+ 
+### Key Capabilities 
+ 
+┌──────────────────────────┬───────────────────────────────────────────────────────────────────────────┐ 
+│ Feature                  │ Detail                                                                    │ 
+├──────────────────────────┼───────────────────────────────────────────────────────────────────────────┤ 
+│ Two output formats       │ Saved Graph (native) + Prompt API (agent-friendly)                        │ 
+├──────────────────────────┼───────────────────────────────────────────────────────────────────────────┤ 
+│ Model-specific templates │ Z-Image Turbo, FLUX.1/2, Krea 2, Ideogram 4, Qwen-Image, FIBO             │ 
+├──────────────────────────┼───────────────────────────────────────────────────────────────────────────┤ 
+│ Backend selection        │ PyTorch MPS (11-node) vs Mflux-ComfyUI MLX (3-node)                       │ 
+├──────────────────────────┼───────────────────────────────────────────────────────────────────────────┤ 
+│ Mac validation checklist │ fp8 detection, memory fit, LoRA architecture match, Krea cfg=0            │ 
+├──────────────────────────┼───────────────────────────────────────────────────────────────────────────┤ 
+│ Reference files          │ Full JSON schema, node catalog with slot indices, link patterns per model │ 
+└──────────────────────────┴───────────────────────────────────────────────────────────────────────────┘ 
+ 
+### Trigger Phrases 
+ 
+The skill activates on: "create a workflow", "scaffold a ComfyUI template", "workflow JSON", "ComfyUI node graph", "image generation workflow", or keywords: comfyui, workflow, node graph, json template, scaffold, image pipeline.
+
+---
+
 ## Snapshot metadata
 
 - **Built:** 2026-06-30
