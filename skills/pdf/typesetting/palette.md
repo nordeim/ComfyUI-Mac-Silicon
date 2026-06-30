@@ -33,21 +33,6 @@ palette.cascade
 
 No orphan colors. No "cover finished, now pick new colors for body" drift.
 
-### Primary Accent Hue Rule (V2.1)
-
-**`accent` (XS tier) MUST use `base_hue`** — the same hue as `header_fill`, `cover_block`, `border`, `icon`, and all other structural roles. Only the saturation and lightness differ (S=0.50-0.70, L=0.40-0.55 for light modes).
-
-This ensures that cover structural lines, body H2 headings, table headers, and accent highlights all visibly belong to the **same color family**.
-
-`accent_secondary` uses the geometric harmony hue (`accent_hue`) for chart series differentiation — this is the **only** role that may deviate from `base_hue`.
-
-```
-base_hue (e.g. 200° steel blue)
-  ├── header_fill:  H=200°, S=0.22, L=0.25   (M tier, structural)
-  ├── accent:       H=200°, S=0.65, L=0.45   (XS tier, same hue, higher sat)
-  └── accent_2:     H=350°, S=0.50, L=0.50   (XS tier, geometric hue for charts)
-```
-
 ### Usage
 
 ```bash
@@ -76,10 +61,8 @@ python3 "$PDF_SKILL_DIR/scripts/pdf.py" palette.cascade --title "2025年度报�
 **Not one color — one color family.**
 
 - After choosing the primary color, all secondary, accent, and background colors must be derived from it
-- **`accent` must share the same hue as `header_fill`** — only saturation and lightness differ
 - Derivation methods: lightness shift, saturation shift, micro hue adjustment (within ±15°)
 - **Forbidden** to have unrelated colors in the same document
-- The only exception is `accent_secondary` which may use a geometric harmony hue for chart differentiation
 
 ```
 Primary       → Headings, key data, primary buttons
@@ -98,22 +81,6 @@ Background    → Pure white / primary at opacity 3-8%
 | Charts / data visualization | Same-family gradient | Differentiate by opacity/lightness, not different hues |
 | Tags / badges | 1 color + text color | No rainbow tags |
 
-### 3. Table Color Rules (Iron Law)
-
-Tables are M+L tier elements. Their colors **must** come from the cascade palette's body_subset:
-
-| Table Element | Cascade Role | Tier | S Cap | ❌ Never Use |
-|---------------|-------------|------|-------|------------|
-| Header bg | `HEADER_FILL` | M | ≤ 0.30 | `ACCENT` (too vivid for header area) |
-| Header text | `colors.white` | — | — | Colored text on colored bg |
-| Even rows | `colors.white` | — | — | Colored fills |
-| Odd rows | `TABLE_STRIPE` | L | ≤ 0.15 | High-saturation stripes |
-| Borders/grid | `BORDER` | S | ≤ 0.50 | Pure black `#000` |
-
-**Why this matters:** Table headers occupy ~5-20% of visual area. The cascade tier system says M-tier elements (5-20% area) must have S ≤ 0.30. Using `ACCENT` (XS tier, S = 0.50-0.75) on table headers violates the area∝1/saturation rule and creates jarring color blocks that clash with the surrounding low-saturation body.
-
-**All tables in one document must use identical colors.** No per-table color themes.
-
 ### 3. Absolutely Forbidden Color Fills
 
 The following are automatic failures:
@@ -123,8 +90,6 @@ The following are automatic failures:
 - ❌ Rainbow-colored pie charts/bar charts
 - ❌ Each section with a different theme color
 - ❌ Gradient transitioning from warm to cool tones (red → blue)
-- ❌ Using `ACCENT` (XS tier) for table header backgrounds — use `HEADER_FILL` (M tier)
-- ❌ Using any color outside the cascade palette for table styling
 
 ---
 
