@@ -138,7 +138,7 @@ Ideogram 4 is a **9.3B parameter single-stream DiT** paired with a **Qwen3-VL-8B
 
 **Critical MLX-specific facts** from the model card:
 - Conversion uses `mlx-forge` (not stock mflux) — it dequantizes the source `float8_e4m3fn` weights *once* at conversion time, then re-packs with MLX's native `mx.quantized_matmul`. Stock mflux builds that only read the FP8 layout cannot load these weights.
-- The model card notes: *"Support for use with mflux is pending an open pull request."* — meaning you may need the `ideogram-mlx-forge-loader` branch of mflux until that PR lands.
+- The model card notes: *"Support for use with mflux is pending an open pull request."* — meaning you may need mflux ≥ 0.18.0 (which merged the PR via commit `filipstrand/mflux@7d2ad1c`) until your installed version catches up, or use the standalone `mlx-forge` tool.
 - **Quantization does not speed up generation**: image diffusion at these token counts is compute-bound, and FLOPs are unchanged by quantization. The 4-bit build halves the footprint of the 8-bit build but does not generate faster. Prefer int8 unless memory-constrained.
 - The text encoder (Qwen3-VL LM) is kept at bf16; the VAE (which is the FLUX.2-architecture VAE) is never quantized. This is critical for image fidelity.
 - 16 GB Macs are described as "tight" — the recommendation is 24 GB+ for comfortable inference.
@@ -260,7 +260,7 @@ The runtime picture has shifted significantly since SKILL.md v1.4. The old three
 - GitHub: 2.2k stars, 30 contributors, 55 releases, 549 commits
 - Install: `uv tool install --upgrade mflux`
 - Python API: First-class (see Section 5)
-- CLI: 9 model-specific entry points (e.g., `mflux-generate-z-image-turbo`, `mflux-generate-ideogram4`, `mflux-generate-qwen`, `mflux-generate-flux1`)
+- CLI: 8 model-specific entry points plus editing-tool subcommands (e.g., `mflux-generate-z-image-turbo`, `mflux-generate-ideogram4`, `mflux-generate-qwen`, `mflux-generate-flux1`)
 
 **Supported features (from README):**
 - Quantization and local model loading
@@ -1109,7 +1109,7 @@ Total: 26 + 18 = 44 GB when running Qwen + FLUX.2 klein 9B simultaneously, leavi
 
 3. **FLUX.2 [dev] MLX quantization** — the full 56B-parameter model (32B DiT + 24B Mistral-3 encoder) has not been fully ported to MLX as of this writing. The `mflux` README lists FLUX.2 as supported with "4B & 9B" sizes, suggesting the [dev] 32B variant may need additional work.
 
-4. **Ideogram 4 MLX integration into mflux mainline** — the MLXBits model card notes: *"Support for use with mflux is pending an open pull request."* Users currently need the `ideogram-mlx-forge-loader` branch or the standalone `mlx-forge` tool. This should resolve within Q3 2026.
+4. **Ideogram 4 MLX integration into mflux mainline** — the MLXBits model card notes: *"Support for use with mflux is pending an open pull request."* mflux ≥ 0.18.0 loads MLXBits weights natively via merged commit `filipstrand/mflux@7d2ad1c`; users on older mflux need the standalone `mlx-forge` tool. The earlier "ideogram-mlx-forge-loader branch" framing was inaccurate — no such branch exists.
 
 5. **ControlNet support breadth** — mflux supports ControlNet (Canny), depth conditioning, fill, and Redux for FLUX.1. Equivalent support for FLUX.2, Ideogram 4, and Qwen-Image-2512 is not yet documented. Users needing ControlNet on these newer models should use the PyTorch MPS path with ComfyUI as a fallback.
 
@@ -1231,7 +1231,7 @@ Each script is documented inline with the section of this report it implements, 
 
 ### Changelog
 
-- **2026-06-30 (v1.0):** Initial release. Conducted 56 web searches across 5 workstreams (WS-A through WS-F), 14 deep page reads of primary sources. Synthesized into ~11k word deep-technical report covering model landscape (9 model families), runtime ecosystem (8 options with maturity assessment), quantization theory, hardware benchmarks (M4/M5 with cited numbers), custom code patterns (8 production scenarios), and ComfyUI integration patterns. Identified DiffusionKit archival (Mar 21, 2026) as critical "do not use" finding. Recommended FLUX.2 [klein] 4B distilled (Apache 2.0) as the safest commercial pick for M4 Pro 24 GB; Qwen-Image-2512 4-bit for M4 Pro 48 GB; Ideogram 4 MLX q8 for non-commercial typography work.
+- **2026-06-30 (v1.0):** Initial release. Conducted 56 web searches across 5 workstreams (WS-A through WS-F), 14 deep page reads of primary sources. Synthesized into ~11k word deep-technical report covering model landscape (8 base model families + editing tools), runtime ecosystem (8 options with maturity assessment), quantization theory, hardware benchmarks (M4/M5 with cited numbers), custom code patterns (8 production scenarios), and ComfyUI integration patterns. Identified DiffusionKit archival (Mar 21, 2026) as critical "do not use" finding. Recommended FLUX.2 [klein] 4B distilled (Apache 2.0) as the safest commercial pick for M4 Pro 24 GB; Qwen-Image-2512 4-bit for M4 Pro 48 GB; Ideogram 4 MLX q8 for non-commercial typography work.
 
 ---
 

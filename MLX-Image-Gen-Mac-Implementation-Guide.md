@@ -30,10 +30,10 @@ This is a **condensed, actionable reference** distilled from the full 100 KB+ re
 | **DiffusionKit archived (Mar 21, 2026)** | `thoddnn/ComfyUI-MLX` is stale, no updates since Nov 2025 | Migrate to **Mflux-ComfyUI** by `@raysers` for ComfyUI↔MLX bridging |
 | **mflux 0.18.0 (Jun 7, 2026)** | Full Python API now available (not CLI-only) | Use `model = ZImageTurbo(quantize=8); image = model.generate_image(...)` for production |
 | **M5 Neural Accelerator** | 3.8× speedup vs M4 on FLUX-dev-4bit via MLX | Requires **macOS 26.2+**; earlier versions run at M4 speed |
-| **Ideogram 4 MLX requires special branch** | Stock mflux can't load MLXBits weights (FP8 layout) | Install `ideogram-mlx-forge-loader` branch or standalone `mlx-forge` |
+| **Ideogram 4 MLX requires mlx-forge-converted weights** | Stock mflux can't load MLXBits weights (FP8 layout) | Use mflux ≥ 0.18.0 (loads them natively) OR convert with standalone `mlx-forge` |
 | **Quantization = memory tool, NOT speed** | Int4 doesn't speed up diffusion (compute-bound) | Prefer int8 unless memory-constrained; int4 halves footprint only |
 
-### 2.2 Model Landscape (9 families, mflux 0.18.0)
+### 2.2 Model Landscape (8 base families + editing tools, mflux 0.18.0)
 
 | Model | Params | Best MLX Quant | Disk Size | RAM Used | License | Strength |
 |-------|--------|----------------|-----------|----------|---------|----------|
@@ -46,6 +46,8 @@ This is a **condensed, actionable reference** distilled from the full 100 KB+ re
 | **FIBO** | 8B+3B | 4-bit | ~7 GB | ~8 GB | CC-BY-NC | JSON-native, lightest |
 | **ERNIE-Image** | 8B | int8 | ~14 GB | ~14 GB | Verify | Vivid, high-contrast |
 | **FLUX.1 (legacy)** | 12B | int8 | ~11 GB | ~12 GB | NC (dev) / Apache (schnell) | Legacy with Kontext |
+
+> _Note: The table above lists 8 base model families supported by mflux 0.18.0 stable. Krea 2 Turbo support was added as a WIP PR ([#468](https://github.com/filipstrand/mflux/actions/runs/28061152328), commit @ed754f1, Jun 24 2026) — check the mflux release notes for the version that finalized it. The "editing tools" tier (Kontext, ControlNet, SeedVR2, In-Context LoRA, CatVTON, IC-Edit, Flux Tools, Depth Pro) is implemented as CLI subcommands within mflux, not as separate base model families._
 
 ### 2.3 Hardware Recommendations by Chip
 
@@ -165,14 +167,16 @@ curl -L -o vae/ae.safetensors \
   "https://huggingface.co/Comfy-Org/z_image_turbo/resolve/main/split_files/vae/ae.safetensors"
 
 # === FLUX.2 klein 4B (Apache 2.0, commercial-safe, ~5 GB) ===
-hf download mlx-community/FLUX.2-klein-4B-distilled-8bit \
+# Repo name is lowercase: mlx-community/flux2-klein-4b-8bit (no "distilled" suffix).
+# Verified 2026-07-01: huggingface.co/mlx-community/flux2-klein-4b-8bit
+hf download mlx-community/flux2-klein-4b-8bit \
   --local-dir diffusion_models/flux2-klein-4b-mlx
 
 # === Qwen-Image-2512 4-bit (Apache 2.0, requires 48GB Mac) ===
 hf download mlx-community/Qwen-Image-2512-4bit \
   --local-dir diffusion_models/qwen-image-2512-4bit
 
-# === Ideogram 4 MLX (requires ideogram-mlx-forge-loader branch) ===
+# === Ideogram 4 MLX (mflux >= 0.18.0 loads MLXBits weights natively) ===
 hf download MLXBits/ideogram-4-mlx-q4 --local-dir diffusion_models/ideogram-4-mlx-q4
 hf download MLXBits/ideogram-4-mlx-q8 --local-dir diffusion_models/ideogram-4-mlx-q8
 
@@ -429,7 +433,7 @@ prompt = {
 | 5 | OOM on 16GB Macs | Use int4 quantization for Ideogram 4; avoid int8 (27 GB) |
 | 6 | ComfyUI slow vs bare mflux | PyTorch MPS is 2-3× slower; use Mflux-ComfyUI for MLX backend |
 | 7 | M5 not faster than M4 | Must be on macOS 26.2+ for Neural Accelerator support |
-| 8 | Ideogram 4 MLX won't load in mflux | Requires `ideogram-mlx-forge-loader` branch |
+| 8 | Ideogram 4 MLX won't load in mflux | Upgrade to mflux ≥ 0.18.0 (loads MLXBits weights natively); OR convert weights with `pip install mlx-forge && mlx-forge ideogram-4 --model-path ./ideogram-4-mlx-q4` |
 | 9 | Qwen-Image 4-bit OOM on 24GB Mac | Need 48GB Mac or use FLUX.2 klein 4B instead |
 | 10 | Quantization doesn't speed up | Expected — quantization saves memory, not compute (diffusion is compute-bound) |
 | 11 | thoddnn/ComfyUI-MLX not working | Abandoned — use Mflux-ComfyUI (raysers) instead |
@@ -438,7 +442,7 @@ prompt = {
 | 14 | M4 Air thermal throttling | Fanless — limit to 3-5 consecutive generations or use low-res |
 | 15 | ComfyUI `library not found` errors | Install with `pip install sqlalchemy alembic opencv-python gitpython toml scikit-image` |
 | 16 | Model download hangs | Use `hf download` instead of `curl` for HuggingFace repos (handles LFS) |
-| 17 | Gated repo access denied | Run `huggingface-cli login` and accept model card terms |
+| 17 | Gated repo access denied | Run `hf auth login` and accept model card terms |
 | 18 | Progress bar corruption (TQDM) | Use `TQDM_DISABLE=1 DISABLE_TQDM=1` env vars |
 | 19 | mflux 0.18 API breaks older scripts | Check changelog — `ZImageTurbo(quantize=8)` is new syntax |
 | 20 | Notebook/lab not importing mflux | Use `uv run --script` pattern, not bare `pip install` |

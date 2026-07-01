@@ -44,7 +44,7 @@ This v1.5 update (2026-06-30) incorporates findings from the companion research 
 
 #### 2. mflux 0.18.0 released 7 June 2026 with full Python API
 
-Previous versions of this guide treated `mflux` as a CLI-only tool. mflux 0.18.0 has a first-class Python API suitable for production deployment. The new API supports 9 model families (Z-Image, FLUX.2 4B/9B, Ideogram 4, ERNIE-Image, FIBO, SeedVR2, Qwen-Image, Depth Pro, FLUX.1) with multi-LoRA, image-to-image, ControlNet, depth conditioning, and seed reproducibility.
+Previous versions of this guide treated `mflux` as a CLI-only tool. mflux 0.18.0 has a first-class Python API suitable for production deployment. The new API supports 8 base model families (Z-Image, FLUX.2 4B/9B, Ideogram 4, ERNIE-Image, FIBO, Qwen-Image, FLUX.1) plus a suite of editing tools (SeedVR2, Depth Pro, Kontext, ControlNet, In-Context LoRA, CatVTON, IC-Edit, Flux Tools) with multi-LoRA, image-to-image, ControlNet, depth conditioning, and seed reproducibility. Krea 2 Turbo support was WIP as of mflux 0.18.0 (PR [#468](https://github.com/filipstrand/mflux/actions/runs/28061152328)).
 
 **Action:** See [Method 2](#method-2-native-mlx-via-mflux-python-api-recommended-for-production) for the Python API path. Ten companion scripts at `research/scripts/` provide production-ready patterns (see [Appendix D](#appendix-d--companion-scripts-manifest)).
 
@@ -54,24 +54,24 @@ The M5 chip (released October 2025 for base tier, March 2026 for Pro/Max) introd
 
 **Action:** If you have an M5 Mac, verify `sw_vers` shows 26.2+. See [Hardware Recommendations by Chip](#hardware-recommendations-by-chip) for the full M4/M5 matrix.
 
-#### 4. Ideogram 4 MLX requires `ideogram-mlx-forge-loader` branch
+#### 4. Ideogram 4 MLX requires mflux ≥ 0.18.0 (or `mlx-forge` standalone)
 
-The community MLX port of Ideogram 4 (`MLXBits/ideogram-4-mlx-q4`) uses `mlx-forge` for conversion, which dequantizes the source FP8 weights once at conversion time. Stock mflux that only reads the FP8 layout cannot load these weights. The integration PR is open but not yet merged as of June 30, 2026.
+The community MLX port of Ideogram 4 (`MLXBits/ideogram-4-mlx-q4`) uses `mlx-forge` for conversion, which dequantizes the source FP8 weights once at conversion time. mflux ≥ 0.18.0 (merged via commit `filipstrand/mflux@7d2ad1c` "load ideogram 4 from mlx-forge converted checkpoints") can load these weights natively. Older mflux builds that only read the FP8 layout cannot.
 
-**Action:** If you want to run Ideogram 4 MLX, install the `ideogram-mlx-forge-loader` branch of mflux OR use the standalone `mlx-forge` tool. See [Pitfall 17](#pitfall-17-ideogram-4-mlx-requires-ideogram-mlx-forge-loader-branch) for details.
+**Action:** If you want to run Ideogram 4 MLX, use mflux ≥ 0.18.0 (`mflux --version` should show 0.18.0 or later) OR convert the weights with the standalone `mlx-forge` tool. See [Pitfall 17](#pitfall-17-ideogram-4-mlx-weights-require-mlx-forge-converted-format-v15) for details.
 
 ---
 
 ## Model Landscape (H1-H2 2026, mflux 0.18.0 matrix)
 
-This guide covers the open-weight image generation models available for local Apple Silicon inference. The `mflux` README (v0.18.0) explicitly supports **9 model families** — a significant expansion from the 3 models covered in v1.4.
+This guide covers the open-weight image generation models available for local Apple Silicon inference. The `mflux` README (v0.18.0) explicitly supports **8 base model families** plus editing tools — a significant expansion from the 3 models covered in v1.4.
 
 ### Ideogram 4.0
 - **Released:** June 3, 2026 — Ideogram's first open-weight text-to-image model
 - **Architecture:** 9.3B parameter single-stream DiT (Diffusion Transformer)
 - **Text Encoder:** Qwen3-VL-8B-Instruct (vision-language model, replaces CLIP/T5)
 - **Key Feature:** Trained on structured JSON captions → enables precise bounding-box layout control
-- **MLX Support:** int4 (~15 GB), int8 (~27 GB), bf16 (~49 GB) via `MLXBits/ideogram-4-mlx-*` (requires `ideogram-mlx-forge-loader` branch — see Pitfall 17)
+- **MLX Support:** int4 (~15 GB), int8 (~27 GB), bf16 (~49 GB) via `MLXBits/ideogram-4-mlx-*` (requires mflux ≥ 0.18.0 OR `mlx-forge` standalone — see Pitfall 17)
 - **License:** Code is Apache-2.0; **model weights are Non-Commercial** (Ideogram 4 Non-Commercial Model Agreement). Do NOT use for commercial SaaS or paid work without an enterprise license.
 
 ### Krea 2
@@ -232,13 +232,14 @@ pip install mflux huggingface_hub hf_transfer
 hf download mlx-community/z-image-turbo-8bit --local-dir ./z-image-turbo-mlx
 
 # FLUX.2 [klein] 4B distilled (Apache 2.0, commercial-safe)
-hf download mlx-community/FLUX.2-klein-4B-distilled-8bit --local-dir ./flux2-klein-4b-mlx
+# Repo name is lowercase: mlx-community/flux2-klein-4b-8bit (verified 2026-07-01).
+hf download mlx-community/flux2-klein-4b-8bit --local-dir ./flux2-klein-4b-mlx
 
 # Qwen-Image-2512 4-bit (Apache 2.0, requires 48GB Mac)
 hf download mlx-community/Qwen-Image-2512-4bit --local-dir ./qwen-image-2512-mlx
 
 # Ideogram 4 (4-bit for 16GB Macs, 8-bit for 24GB+)
-# ⚠️ Requires ideogram-mlx-forge-loader branch — see Pitfall 17
+# ⚠️ Requires mflux ≥ 0.18.0 (loads MLXBits weights natively) OR mlx-forge standalone — see Pitfall 17
 hf download MLXBits/ideogram-4-mlx-q4 --local-dir ./ideogram-4-mlx-q4
 hf download MLXBits/ideogram-4-mlx-q8 --local-dir ./ideogram-4-mlx-q8
 
@@ -892,8 +893,8 @@ For the full server landscape, see [research report §2.7](research/mlx-image-ge
 
 ### v1.5 (2026-06-30) — Major expansion based on H1 2026 research
 
-- **4 Critical Update Notices** — DiffusionKit archived, mflux 0.18.0 Python API, M5 macOS 26.2+, Ideogram 4 MLX branch requirement
-- **Model Landscape expanded from 3 to 9 families** — Added FLUX.2 (klein 4B/9B/KV, dev 32B), Qwen-Image-2512 (5 quant tiers), FIBO, ERNIE-Image, SeedVR2, Depth Pro, FLUX.1 (legacy)
+- **4 Critical Update Notices** — DiffusionKit archived, mflux 0.18.0 Python API, M5 macOS 26.2+, Ideogram 4 MLX requires mflux ≥ 0.18.0 (or mlx-forge standalone)
+- **Model Landscape expanded from 3 to 8 base families + editing tools** — Added FLUX.2 (klein 4B/9B/KV, dev 32B), Qwen-Image-2512 (5 quant tiers), FIBO, ERNIE-Image, FLUX.1 (legacy) + editing tools (SeedVR2, Depth Pro, Kontext, ControlNet, In-Context LoRA, CatVTON, IC-Edit, Flux Tools). Krea 2 Turbo was WIP as of mflux 0.18.0 (PR #468).
 - **Hardware Recommendations expanded** — Added M5/M5 Pro/M5 Max with Neural Accelerator notes, added memory bandwidth column, added macOS 26.2+ requirement
 - **Runtime Methods expanded from 3 to 7** — Added Method 2 (mflux Python API), Method 5 (ComfyUI + Mflux-ComfyUI), Method 6 (Native Swift FluxForge), Method 7 (Production API Servers)
 - **Method 2 (NEW)** — Full Python API coverage with 10 sub-sections, each linking to a companion script
@@ -1136,7 +1137,7 @@ uv tool list | grep mflux
 | `z_image_turbo_bf16.safetensors` | bf16 | 11 GB | Open-source (verify) | ✅ Recommended for Mac (lightest) |
 | `krea2_turbo_bf16.safetensors` | bf16 | 24 GB | Open-source (verify) | ✅ Works on Mac (Turbo for inference) |
 | `flux1-dev.safetensors` | bf16 | 22 GB | NC | ✅ Works on Mac (legacy) |
-| `flux2-klein-4B-distilled-mlx-8bit` | MLX int8 | ~5 GB | **Apache 2.0** | ✅ NEW — Commercial-safe, fastest |
+| `mlx-community/flux2-klein-4b-8bit` | MLX int8 | ~5 GB | **Apache 2.0** | ✅ NEW — Commercial-safe, fastest |
 | `Qwen-Image-2512-4bit` | MLX int4 | 25.9 GB | **Apache 2.0** | ✅ NEW — Requires 48GB Mac |
 | `Fibo-mlx-4bit` | MLX int4 | ~7 GB | CC-BY-NC | ✅ NEW — JSON-native prompting |
 | `ideogram-4-mlx-q4` | MLX int4 | 15 GB | NC | ✅ NEW — Requires forge-loader branch (Pitfall 17) |
@@ -1154,8 +1155,9 @@ curl -L -o diffusion_models/z_image_turbo_bf16.safetensors \
   "https://huggingface.co/Comfy-Org/z_image_turbo/resolve/main/diffusion_models/z_image_turbo_bf16.safetensors"
 
 # === FLUX.2 [klein] 4B distilled (Apache 2.0, commercial-safe, ~5 GB) ===
-hf download mlx-community/FLUX.2-klein-4B-distilled-8bit \
-  --local-dir diffusion_models/flux2-klein-4b-distilled-mlx
+# Repo name is lowercase: mlx-community/flux2-klein-4b-8bit (verified 2026-07-01).
+hf download mlx-community/flux2-klein-4b-8bit \
+  --local-dir diffusion_models/flux2-klein-4b-mlx
 
 # === Qwen-Image-2512 4-bit (Apache 2.0, requires 48GB Mac) ===
 hf download mlx-community/Qwen-Image-2512-4bit \
@@ -1618,26 +1620,33 @@ See [Appendix E: Migration Guide](#appendix-e--migration-guide-v14--v15) for the
 
 ---
 
-### 🆕 Pitfall 17: Ideogram 4 MLX Requires `ideogram-mlx-forge-loader` Branch (v1.5)
+### 🆕 Pitfall 17: Ideogram 4 MLX Weights Require mlx-forge-Converted Format (v1.5)
 
-**Symptom:** Running `mflux-generate-ideogram4 --model-path ./ideogram-4-mlx-q4` fails with weight loading errors.
+**Symptom:** Running `mflux-generate-ideogram4 --model-path ./ideogram-4-mlx-q4` fails with a weight-loading error.
 
-**Cause:** The community MLX port of Ideogram 4 (`MLXBits/ideogram-4-mlx-q4`) uses `mlx-forge` for conversion, which dequantizes the source FP8 weights once at conversion time. Stock mflux that only reads the FP8 layout cannot load these weights.
+**Cause:** The community MLX port of Ideogram 4 (`MLXBits/ideogram-4-mlx-q4`) was converted using the `mlx-forge` tool, which dequantizes the source FP8 weights once at conversion time and re-packs them with MLX's native `mx.quantized_matmul`. Older mflux builds (pre-0.18.0) that only read the FP8 layout cannot load these weights.
 
-**Solution:** Install the `ideogram-mlx-forge-loader` branch of mflux OR use the standalone `mlx-forge` tool:
+**Solution:** Use mflux ≥ 0.18.0, which merged support for loading mlx-forge-converted checkpoints via commit `filipstrand/mflux@7d2ad1c` ("load ideogram 4 from mlx-forge converted checkpoints (bf16 + int8)"). No special branch is required.
+
 ```bash
-# Option A: Install the ideogram-mlx-forge-loader branch
-git clone https://github.com/filipstrand/mflux.git
-cd mflux
-git checkout ideogram-mlx-forge-loader
-pip install -e .
+# Verify mflux version (must show 0.18.0 or later)
+mflux --version
 
-# Option B: Use mlx-forge standalone
+# Generate with MLXBits weights — works natively on mflux ≥ 0.18.0
+mflux-generate-ideogram4 \
+  --model-path ./ideogram-4-mlx-q4 \
+  --prompt "a ginger cat wearing a tiny wizard hat" \
+  --output ideogram_out.png
+```
+
+If you cannot upgrade mflux, use the standalone `mlx-forge` tool to re-convert the weights:
+
+```bash
 pip install mlx-forge
 mlx-forge ideogram-4 --model-path ./ideogram-4-mlx-q4
 ```
 
-The integration PR is open in mflux as of June 30, 2026. Once merged, stock mflux will load these weights directly.
+**Note:** The previous "ideogram-mlx-forge-loader branch" framing (v1.4 and early v1.5 drafts) was inaccurate — no such branch exists in the mflux repo. The mlx-forge support is a feature in mflux main, not a separate branch.
 
 ---
 
@@ -2000,9 +2009,9 @@ mflux-generate-z-image-turbo --prompt "..." --steps 9 -q 8
 mflux-generate-flux1 --model mlx-community/FLUX.1-dev --prompt "..." --steps 20
 
 # FLUX.2 (klein 4B/9B, dev 32B)
-mflux-generate-flux2 --model mlx-community/FLUX.2-klein-4B-distilled-8bit --prompt "..." --steps 4
+mflux-generate-flux2 --model mlx-community/flux2-klein-4b-8bit --prompt "..." --steps 4
 
-# Ideogram 4 (requires ideogram-mlx-forge-loader branch — see Pitfall 17)
+# Ideogram 4 (requires mflux ≥ 0.18.0 OR mlx-forge standalone — see Pitfall 17)
 mflux-generate-ideogram4 --model-path ./ideogram-4-mlx-q4 --prompt "..." --preset V4_QUALITY_48
 
 # Qwen-Image-2512 (Apache 2.0, requires 48GB Mac for 4-bit)
@@ -2124,7 +2133,7 @@ See [Appendix E: Migration Guide](#appendix-e--migration-guide-v14--v15) for the
 | Model | Path | License | Notes |
 |-------|------|---------|-------|
 | `z_image_turbo_bf16.safetensors` | `diffusion_models/` | Open-source (verify) | ✅ Recommended |
-| `flux2-klein-4B-distilled-mlx` | `diffusion_models/` | **Apache 2.0** | ✅ NEW — Commercial-safe |
+| `mlx-community/flux2-klein-4b-8bit` | `diffusion_models/` | **Apache 2.0** | ✅ NEW — Commercial-safe |
 | `Qwen-Image-2512-4bit` | `diffusion_models/` | **Apache 2.0** | ✅ NEW — Requires 48GB Mac |
 | `Fibo-mlx-4bit` | `diffusion_models/` | CC-BY-NC | ✅ NEW — JSON-native |
 | `krea2_turbo_bf16.safetensors` | `diffusion_models/` | Open-source (verify) | ✅ Works |
@@ -2239,7 +2248,7 @@ If you intend to use generated images commercially (paid client work, SaaS produ
 
 | Model | Verified Source | MLX Quant Available |
 |-------|-----------------|---------------------|
-| **FLUX.2 [klein] 4B distilled** | [flux2 repo](https://github.com/black-forest-labs/flux2) | Yes — `mlx-community/FLUX.2-klein-4B-distilled-8bit` |
+| **FLUX.2 [klein] 4B distilled** | [flux2 repo](https://github.com/black-forest-labs/flux2) | Yes — `mlx-community/flux2-klein-4b-8bit` (lowercase; verified 2026-07-01) |
 | **FLUX.2 [klein] 4B Base** | [flux2 repo](https://github.com/black-forest-labs/flux2) | Yes |
 | **Qwen-Image-2512** | [mlx-community model card](https://huggingface.co/mlx-community/Qwen-Image-2512-4bit) | Yes — 3/4/5/6/8-bit (24GB Macs: 3-bit only) |
 | **FLUX.2-VAE** (autoencoder only) | [BFL blog](https://bfl.ai/blog/flux-2) | N/A |
@@ -2349,8 +2358,9 @@ curl -L -o models/diffusion_models/z_image_turbo_bf16.safetensors \
   "https://huggingface.co/Comfy-Org/z_image_turbo/resolve/main/diffusion_models/z_image_turbo_bf16.safetensors" &
 
 # FLUX.2 [klein] 4B distilled (Apache 2.0, commercial-safe, ~5 GB) — NEW in v1.5
-hf download mlx-community/FLUX.2-klein-4B-distilled-8bit \
-  --local-dir models/diffusion_models/flux2-klein-4b-distilled-mlx &
+# Repo name is lowercase: mlx-community/flux2-klein-4b-8bit (verified 2026-07-01).
+hf download mlx-community/flux2-klein-4b-8bit \
+  --local-dir models/diffusion_models/flux2-klein-4b-mlx &
 
 # Qwen-Image-2512 4-bit (Apache 2.0, requires 48GB Mac) — NEW in v1.5
 # hf download mlx-community/Qwen-Image-2512-4bit \
@@ -2399,7 +2409,7 @@ echo "  nohup env TQDM_DISABLE=1 DISABLE_TQDM=1 PYTHONUNBUFFERED=1 ~/.venv/bin/p
 echo ""
 echo "Then open: http://127.0.0.1:8188"
 echo ""
-echo "IMPORTANT: Use bf16 or MLX-quantized models (z_image_turbo_bf16, flux2-klein-4B-distilled-mlx, Qwen-Image-2512-4bit)"
+echo "IMPORTANT: Use bf16 or MLX-quantized models (z_image_turbo_bf16, mlx-community/flux2-klein-4b-8bit, Qwen-Image-2512-4bit)"
 echo "Do NOT use fp8 models (ideogram4_fp8) — they don't work on Mac MPS"
 echo ""
 echo "NEW in v1.5: mflux 0.18.0 Python API + 10 companion scripts"
@@ -2584,7 +2594,7 @@ Before running generation, verify:
   ls ~/ComfyUI/custom_nodes/Mflux-ComfyUI  # should exist
   ls ~/ComfyUI/custom_nodes/ComfyUI-MLX    # should NOT exist (migrated to Mflux-ComfyUI)
   ```
-- [ ] If using Ideogram 4 MLX: `ideogram-mlx-forge-loader` branch checked out OR `mlx-forge` standalone installed
+- [ ] If using Ideogram 4 MLX: mflux ≥ 0.18.0 installed (`mflux --version` shows 0.18.0+) OR `mlx-forge` standalone installed
 
 ### License Audit (NEW v1.5)
 - [ ] **If commercial use:** Verified model license is Apache 2.0 (see [Section 12](#12-license-audit--commercial-use-new-v15))
@@ -2777,8 +2787,9 @@ The v1.4 bf16 models still work, but the MLX-quantized variants are ~25% faster 
 cd ~/ComfyUI/models/diffusion_models
 
 # Recommended new downloads (Apache 2.0, commercial-safe):
-hf download mlx-community/FLUX.2-klein-4B-distilled-8bit \
-  --local-dir flux2-klein-4b-distilled-mlx
+# Repo name is lowercase: mlx-community/flux2-klein-4b-8bit (verified 2026-07-01).
+hf download mlx-community/flux2-klein-4b-8bit \
+  --local-dir flux2-klein-4b-mlx
 
 # For 48GB Macs only:
 hf download mlx-community/Qwen-Image-2512-4bit \
@@ -2867,7 +2878,7 @@ uv tool install mflux==0.14.0
 - **MLX Version:** 0.31.2
 - **Python Version:** 3.12.x
 - **PyTorch Version:** 2.12.1
-- **Status:** Production Ready (v1.5 — major expansion with mflux Python API, Mflux-ComfyUI, 9 model families, M5 support, 10 companion scripts)
+- **Status:** Production Ready (v1.5 — major expansion with mflux Python API, Mflux-ComfyUI, 8 model families + editing tools, M5 support, 10 companion scripts)
 
 ### Covered Models (Expanded in v1.5)
 
@@ -2884,7 +2895,7 @@ uv tool install mflux==0.14.0
 
 ### Covered Methods (Expanded from 3 to 7 in v1.5)
 
-- **Method 1:** mflux CLI (updated for 0.18.0, 9 model families)
+- **Method 1:** mflux CLI (updated for 0.18.0, 8 model families + editing tools)
 - **Method 2:** (NEW v1.5) mflux Python API — 10 sub-sections with companion scripts
 - **Method 3:** ComfyUI + PyTorch MPS (visual node editing)
 - **Method 4:** Draw Things (expanded with Metal FlashAttention 2.0, Metal Quantized Attention)
@@ -2900,7 +2911,7 @@ uv tool install mflux==0.14.0
 
 ### Changelog
 
-- **2026-06-30 (v1.5):** Major expansion based on H1 2026 research. Added 4 critical update notices (DiffusionKit archived, mflux 0.18.0 Python API, M5 macOS 26.2+, Ideogram 4 MLX branch). Expanded Model Landscape from 3 to 9 families (added FLUX.2 4B/9B/KV/dev, Qwen-Image-2512, FIBO, ERNIE-Image, SeedVR2, Depth Pro). Expanded Hardware Recommendations with M5/M5 Pro/M5 Max and memory bandwidth table. Expanded Runtime Methods from 3 to 7 (added Method 2 mflux Python API, Method 5 Mflux-ComfyUI, Method 6 FluxForge Swift, Method 7 Production API Servers). Added 5 new pitfalls (DiffusionKit archived, Ideogram 4 MLX branch, M5 macOS 26.2+, quantization-is-memory-tool, Qwen-Image 24GB limit). Added Section 11 Production Deployment Patterns with 10 companion script references. Added Section 12 License Audit for commercial use. Added Appendix D Companion Scripts Manifest. Added Appendix E Migration Guide v1.4 → v1.5. Cross-references to research report throughout.
+- **2026-06-30 (v1.5):** Major expansion based on H1 2026 research. Added 4 critical update notices (DiffusionKit archived, mflux 0.18.0 Python API, M5 macOS 26.2+, Ideogram 4 MLX requires mflux ≥ 0.18.0). Expanded Model Landscape from 3 to 8 base families + editing tools (added FLUX.2 4B/9B/KV/dev, Qwen-Image-2512, FIBO, ERNIE-Image; plus editing tools SeedVR2, Depth Pro, Kontext, ControlNet, etc.). Krea 2 Turbo was WIP as of mflux 0.18.0 (PR #468). Expanded Hardware Recommendations with M5/M5 Pro/M5 Max and memory bandwidth table. Expanded Runtime Methods from 3 to 7 (added Method 2 mflux Python API, Method 5 Mflux-ComfyUI, Method 6 FluxForge Swift, Method 7 Production API Servers). Added 5 new pitfalls (DiffusionKit archived, Ideogram 4 MLX weights require mlx-forge-converted format, M5 macOS 26.2+, quantization-is-memory-tool, Qwen-Image 24GB limit). Added Section 11 Production Deployment Patterns with 10 companion script references. Added Section 12 License Audit for commercial use. Added Appendix D Companion Scripts Manifest. Added Appendix E Migration Guide v1.4 → v1.5. Cross-references to research report throughout.
 
 - **2026-06-30 (v1.4):** Major expansion. Added Model Landscape section (Ideogram 4.0, Krea 2 RAW/Turbo, Z-Image). Added hardware table for M4 Base/Pro/Max. Added three methods (MLX/mflux, ComfyUI, Draw Things). Added JSON prompting schema for Ideogram 4. Added licensing warning (Ideogram 4 non-commercial). Added Krea 2 CFG=0 pitfall, M4 Air thermal throttling, MPS vs MLX performance comparison. Added MLX model repositories (MLXBits, SceneWorks).
 
@@ -2945,8 +2956,8 @@ uv run research/scripts/01_z_image_turbo_basic.py
 
 The v1.5 SKILL.md expands the v1.4 baseline (1,442 lines → 2,917 lines) with:
 
-- 4 critical update notices (DiffusionKit archived, mflux 0.18.0 Python API, M5 macOS 26.2+, Ideogram 4 MLX branch)
-- Model Landscape expanded from 3 to 9 families
+- 4 critical update notices (DiffusionKit archived, mflux 0.18.0 Python API, M5 macOS 26.2+, Ideogram 4 MLX requires mflux ≥ 0.18.0)
+- Model Landscape expanded from 3 to 8 base families + editing tools
 - Runtime Methods expanded from 3 to 7
 - 5 new pitfalls (16-20)
 - New Section 11 (Production Deployment Patterns)

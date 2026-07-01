@@ -15,7 +15,7 @@ Most "source code" lives in `research/scripts/` — these are illustrative compa
 Read in this order when continuing work:
 
 1. **`MLX-Image-Gen-Mac-Implementation-Guide.md`** (21 KB) — Start here. Condensed, actionable agent-facing guide: install commands, model downloads, CLI/API/ComfyUI usage, 20-pitfall table, per-model settings, verification checklist.
-2. **`comfyui-set-mac-SKILL.md`** (114 KB, v1.5) — The definitive step-by-step install & config guide. 7 runtime methods × 9 model families × 20 pitfalls. **Other `comfyui-set-mac-SKILL*` files are drafts/older versions** — only `comfyui-set-mac-SKILL.md` (without `-new`, `-v1`, `updates`, `validation` suffix) is canonical.
+2. **`comfyui-set-mac-SKILL.md`** (114 KB, v1.5) — The definitive step-by-step install & config guide. 7 runtime methods × 8 model families + editing tools × 20 pitfalls. **Other `comfyui-set-mac-SKILL*` files are drafts/older versions** — only `comfyui-set-mac-SKILL.md` (without `-new`, `-v1`, `updates`, `validation` suffix) is canonical.
 3. **`mlx-image-gen-mac-2026.md`** (84 KB) — Deep technical research report. The "why" behind recommendations. 49 cited primary sources.
 4. **`MLX-Optimized_Z-Image_Turbo_and_FLUX_Workflows.md`** (22 KB) — M4 Pro 128 GB-targeted workflows. mflux CLI + ComfyUI JSON schemas for Z-Image Turbo and FLUX.2.
 5. **`README.md`** — Workspace overview and file index.

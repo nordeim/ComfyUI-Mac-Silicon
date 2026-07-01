@@ -1,4 +1,6 @@
-# ComfyUI Workflow JSON Schema (v0.4)
+# ComfyUI Workflow JSON Schema (v1.0 Latest, v0.4 backward-compat)
+
+> **Schema version note.** ComfyUI's current Latest workflow JSON schema is **v1.0** (per [docs.comfy.org/specs/workflow_json](https://docs.comfy.org/specs/workflow_json)). The v0.4 format documented below is still accepted by ComfyUI for backward compatibility — new workflows should target v1.0. The link array format `[link_id, src_node, src_slot, dst_node, dst_slot, type]` is identical between v0.4 and v1.0.
 
 ## Top-Level Structure
 
@@ -12,7 +14,7 @@
   "links": [...],
   "groups": [...],
   "config": {},
-  "version": 0.4
+  "version": 1.0
 }
 ```
 
@@ -26,7 +28,7 @@
 | `links` | array | Link objects (see below) |
 | `groups` | array | Group objects (see below) |
 | `config` | object | Always `{}` |
-| `version` | float | Always `0.4` |
+| `version` | float | `1.0` (Latest, [docs.comfy.org/specs/workflow_json](https://docs.comfy.org/specs/workflow_json)); `0.4` accepted for backward compat (legacy, [docs.comfy.org/specs/workflow_json_0.4](https://docs.comfy.org/specs/workflow_json_0.4)) |
 
 ## Node Object
 

@@ -20,7 +20,7 @@ compatible with the Mac MLX/MPS constraints documented in the workspace.
 
 ## Architecture
 
-A ComfyUI workflow is a JSON file with these required keys:
+A ComfyUI workflow is a JSON file with these required keys (schema v1.0 — the current Latest per [docs.comfy.org/specs/workflow_json](https://docs.comfy.org/specs/workflow_json); v0.4 still accepted for backward compat per [docs.comfy.org/specs/workflow_json_0.4](https://docs.comfy.org/specs/workflow_json_0.4)):
 
 ```
 {
@@ -32,9 +32,11 @@ A ComfyUI workflow is a JSON file with these required keys:
   "links": [...],
   "groups": [...],
   "config": {},
-  "version": 0.4
+  "version": 1.0
 }
 ```
+
+> **Schema version note.** `"version": 1.0` is the current Latest ComfyUI workflow JSON schema (per [docs.comfy.org/specs/workflow_json](https://docs.comfy.org/specs/workflow_json)). The v0.4 format is still accepted by ComfyUI for backward compatibility. The link array format `[link_id, src_node, src_slot, dst_node, dst_slot, type]` is identical between v0.4 and v1.0.
 
 Two output formats exist:
 
@@ -171,7 +173,7 @@ For workflows using the `Mflux-ComfyUI` custom node (MLX backend, recommended):
 | scheduler | `beta57` | |
 | steps | 4-12 | Distilled model |
 | cfg | 7.0 | |
-| model | `mlx-community/FLUX.2-klein-4B-distilled-8bit` | ~5 GB |
+| model | `mlx-community/flux2-klein-4b-8bit` (lowercase; verified 2026-07-01) | ~5 GB |
 
 ### Krea 2 Turbo (CFG-FREE — critical)
 
